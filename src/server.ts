@@ -1,18 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import app from "./app";
 
-const port = process.env.PORT as string;
+const port = process.env.PORT || 5000;
 const mongoUrl = process.env.MONGO_DB_URL as string;
 
+if (!mongoUrl) {
+  throw new Error("MongoDB URL not found in .env");
+}
+
 mongoose
-   .connect(mongoUrl, {
-      dbName: "myEvents"
-   })
-   .then(() => {
-      app.listen(port, () => {
-         console.log(`Server is running on port ${port}`);
-      })
-   })
-   .catch((error: Error) => {
-      process.exit(1);
-   })
+  .connect(mongoUrl, {
+    dbName: "myEvents",
+  })
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch((error: Error) => {
+    process.exit(1);
+  });
