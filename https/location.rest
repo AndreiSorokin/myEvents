@@ -1,5 +1,5 @@
 ### Create a new location
-POST http://localhost:5000/api/locations
+POST http://localhost:3003/api/locations
 Content-Type: application/json
 
 {
@@ -14,4 +14,4 @@ Content-Type: application/json
 }
 
 ### Get location by ID
-GET http://localhost:5000/api/locations/66e31ff0444a4d55c59828a7
+GET http://localhost:3003/api/locations/66e31ff0444a4d55c59828a7

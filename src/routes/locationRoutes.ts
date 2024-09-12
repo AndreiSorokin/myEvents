@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { createLocation, getLocation } from "../controllers/locationController";
+import { createLocation, getLocationById } from "../controllers/locationController";
 
 const router = Router();
 
 router.post("/locations", createLocation);
-router.get("/locations/:id", getLocation);
+router.get("/locations/:id", getLocationById);
 
 export default router;

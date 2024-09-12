@@ -8,4 +8,12 @@ const AddressSchema = new Schema<IAddress>({
     post_code: { type: String, required: true }
 });
 
+AddressSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id;
+        delete returnedObject._id;
+        delete returnedObject.__v;
+    }
+})
+
 export const AddressModel = model<IAddress>('Address', AddressSchema);

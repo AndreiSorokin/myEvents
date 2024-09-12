@@ -1,23 +1,29 @@
-import { IAddress } from "../interfaces/IAddress";
+import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { ILocation } from "../interfaces/ILocation";
 import { LocationModel } from "../models/location";
 
-export class LocationService {
-  static async createLocation(
-    latitude: number,
-    longitude: number,
-    address: IAddress
-  ): Promise<ILocation> {
-    const location = new LocationModel({
-      latitude,
-      longitude,
-      address,
-    });
-
-    return location.save();
+const getLocationById = async(id: string): Promise<ILocation> => {
+  if(!id) {
+    throw new Error("Location ID is required");
   }
 
-  static async getLocationById(id: string): Promise<ILocation | null> {
-    return LocationModel.findById(id).populate("address");
+  const foundLocation = await LocationModel.findById(id).populate('address');
+
+  if(!foundLocation) {
+    throw new NotFoundError();
   }
+
+  return foundLocation;
 }
+
+const createLocation = async(locationData: ILocation): Promise<ILocation> => {
+  const { latitude, longitude, address } = locationData;
+
+  if(!latitude ||!longitude || !address) {
+    throw new BadRequestError();
+  }
+
+  return await locationData.save();
+}
+
+export default { getLocationById, createLocation };
