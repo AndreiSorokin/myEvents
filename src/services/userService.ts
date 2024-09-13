@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {
   BadRequestError,
   InternalServerError,
@@ -30,14 +31,18 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
 };
 
 // Find user by id
-export const findUserById = async (id: string): Promise<IUser | null> => {
+export const findUserById = async (id: string): Promise<IUser> => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new NotFoundError("Invalid User ID");
+    }
     const user = await UserModel.findById(id).populate("events");
     if (!user) {
       throw new NotFoundError("User not found");
     }
     return user;
   } catch (error) {
+    console.error("Error in findUserById:", error);
     throw new InternalServerError("Error fetching user by ID");
   }
 };
@@ -63,7 +68,7 @@ export const fetchAllUsers = async (
 export const updateUser = async (
   id: string,
   updatedData: Partial<IUser>
-): Promise<IUser | null> => {
+): Promise<IUser> => {
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(id, updatedData, {
       new: true,

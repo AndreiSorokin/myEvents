@@ -1,5 +1,8 @@
+@host = http://localhost:3003
+@userId = 66e46898ac0bace7afcc0dd3
+
 ### Create a new user
-POST http://localhost:3003/api/users 
+POST {{host}}/api/users 
 Content-Type: application/json
 
 {
@@ -9,10 +12,20 @@ Content-Type: application/json
   "role": "user"
 }
 
-### Get all users 
+### Get all users (with pagination)
+GET {{host}}/api/users?page=1&limit=10
 
 ### Get a user by ID
+GET {{host}}/api/users/{{userId}}
 
-### Update a user
+### Update a user by ID
+PUT {{host}}/api/users/{{userId}}
+Content-Type: application/json
 
-### Delete a user
+{
+  "name": "John Updated",
+  "email": "johnupdated@example.com"
+}
+
+### Delete a user by ID
+DELETE {{host}}/api/users/{{userId}}

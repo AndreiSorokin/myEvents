@@ -4,7 +4,7 @@ import { EventType } from "../enums/EventType";
 import { LocationModel } from "./location";
 
 const eventSchema = new Schema<IEvent>({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   location: { type: LocationModel.schema, required: true },
   organizer: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to the User (organizer)
