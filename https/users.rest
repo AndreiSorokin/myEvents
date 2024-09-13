@@ -1,0 +1,18 @@
+### Create a new user
+POST http://localhost:3003/api/users 
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "Password123",
+  "role": "user"
+}
+
+### Get all users 
+
+### Get a user by ID
+
+### Update a user
+
+### Delete a user
