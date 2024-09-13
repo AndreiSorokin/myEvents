@@ -5,6 +5,7 @@ import cors from "cors";
 import { errorHandler } from "./middleware/errorMiddleware";
 import locationRoutes from "./routes/locationRoutes";
 import userRoutes from "./routes/userRoutes";
+import eventRoutes from "./routes/eventRoutes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use("/api", locationRoutes);
 app.use("/api", userRoutes);
+app.use("/api", eventRoutes);
 
 // Global error handling middleware
 app.use(errorHandler);

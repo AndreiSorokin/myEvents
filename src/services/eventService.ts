@@ -21,6 +21,7 @@ export const createEvent = async (
     const newEvent = new EventModel(eventData);
     return await newEvent.save();
   } catch (error) {
+    console.error("Error create a new event:", error);
     throw new InternalServerError("Error creating event");
   }
 };
@@ -28,12 +29,16 @@ export const createEvent = async (
 // Find event by ID
 export const findEventById = async (id: string): Promise<IEvent> => {
   try {
+    if (!id) {
+      throw new NotFoundError("Invalid Event ID");
+    }
     const event = await EventModel.findById(id).populate("organizer attendees");
     if (!event) {
       throw new NotFoundError("Event not found");
     }
     return event;
   } catch (error) {
+    console.error("Error find event by Id:", error);
     throw new InternalServerError("Error fetching event by ID");
   }
 };
@@ -52,6 +57,7 @@ export const fetchAllEvents = async (
     const total = await EventModel.countDocuments();
     return { events, total };
   } catch (error) {
+    console.error("Error Fetch all events: ", error);
     throw new InternalServerError("Error fetching events");
   }
 };
@@ -70,6 +76,7 @@ export const updateEvent = async (
     }
     return updatedEvent;
   } catch (error) {
+    console.error("Error update event", error);
     throw new InternalServerError("Error updating event");
   }
 };
@@ -82,6 +89,7 @@ export const deleteEvent = async (id: string): Promise<void> => {
       throw new NotFoundError("Event not found");
     }
   } catch (error) {
+    console.error("Error delete event", error);
     throw new InternalServerError("Error deleting event");
   }
 };

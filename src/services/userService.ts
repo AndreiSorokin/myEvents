@@ -33,7 +33,7 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
 // Find user by id
 export const findUserById = async (id: string): Promise<IUser> => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!id) {
       throw new NotFoundError("Invalid User ID");
     }
     const user = await UserModel.findById(id).populate("events");
@@ -42,7 +42,6 @@ export const findUserById = async (id: string): Promise<IUser> => {
     }
     return user;
   } catch (error) {
-    console.error("Error in findUserById:", error);
     throw new InternalServerError("Error fetching user by ID");
   }
 };
