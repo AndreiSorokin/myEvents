@@ -1,0 +1,52 @@
+@host = http://localhost:3003
+@eventId = 66e47b5bc7fd3303b57c8f0b
+
+### Create a new event
+POST {{host}}/api/events
+Content-Type: application/json
+
+{
+  "name": "Tech Conference 2024",
+  "description": "A leading technology conference.",
+  "location": {
+    "latitude": 60.1699,
+    "longitude": 24.9384,
+    "address": {
+      "country": "Finland",
+      "city": "Helsinki",
+      "district": "Kallio",
+      "post_code": "00530"
+  }
+  },
+  "organizer": "66e4739bf452f73c4fdb019d", 
+  "date": "2024-09-20T18:30:00.000Z",
+  "price": 250,
+  "event_link": "https://techconf2024.com",
+  "event_type": "conference",
+  "attendees": []
+}
+
+### Get event by ID
+GET {{host}}/api/events/{{eventId}}
+
+### Fetch all events with pagination
+GET {{host}}/api/events?page=1&limit=10
+
+### Update event by ID (partial update - only date)
+PUT {{host}}/api/events/{{eventId}}
+Content-Type: application/json
+
+{
+  "date": "2024-10-15T10:00:00.000Z"
+}
+
+### Update event by ID (partial update - only price)
+PUT {{host}}/api/events/{{eventId}}
+Content-Type: application/json
+
+{
+  "price": 300
+}
+
+### Delete event by ID
+DELETE {{host}}/api/events/{{eventId}}

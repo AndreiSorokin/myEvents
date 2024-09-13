@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import {
   BadRequestError,
   InternalServerError,
@@ -25,7 +24,7 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
       role,
     });
     return await newUser.save();
-  } catch (error) {
+  } catch (error: any) {
     throw new InternalServerError("Error creating user");
   }
 };

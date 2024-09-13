@@ -1,15 +1,15 @@
 @host = http://localhost:3003
-@userId = 66e46898ac0bace7afcc0dd3
+@userId = 66e4736af452f73c4fdb0196
 
 ### Create a new user
 POST {{host}}/api/users 
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "Password123",
-  "role": "user"
+  "name": "Alice Johnson",
+  "email": "alice.johnson@example.com",
+  "password": "Password123!",
+  "role": "organizer"
 }
 
 ### Get all users (with pagination)
@@ -23,8 +23,8 @@ PUT {{host}}/api/users/{{userId}}
 Content-Type: application/json
 
 {
-  "name": "John Updated",
-  "email": "johnupdated@example.com"
+  "name": "Michael Smith Updated",
+  "email": "michael.smith@example.com"
 }
 
 ### Delete a user by ID
