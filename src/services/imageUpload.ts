@@ -11,7 +11,7 @@ export async function uploadImageToCloudinary(fileBuffer: Buffer, fileName: stri
       const cleanFileName = fileName.endsWith('.png') ? fileName.slice(0, -4) : fileName;
 
       const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${fileBuffer.toString('base64')}`, {
-         folder: "TheStore",
+         folder: "myEvents",
          public_id: cleanFileName,
       });
       return result.secure_url;
