@@ -1,5 +1,7 @@
+@host = http://localhost:3003
+
 ### Create a new location
-POST http://localhost:3003/api/locations
+POST {{host}}/api/locations
 Content-Type: application/json
 
 {
@@ -13,5 +15,26 @@ Content-Type: application/json
   }
 }
 
+### Get All locations
+GET {{host}}/api/locations
+
 ### Get location by ID
-GET http://localhost:3003/api/locations/66e31ff0444a4d55c59828a7
+GET {{host}}/api/locations/66e746c8ef8f1c8ffcc722ed
+
+### Update location
+PUT {{host}}/api/locations/66e746c8ef8f1c8ffcc722ed
+Content-Type: application/json
+
+{
+  "latitude": 60.1699,
+  "longitude": 24.9384,
+  "address": {
+    "country": "Finland",
+    "city": "Vaasa",
+    "district": "Leipatehdas",
+    "post_code": "65100"
+  }
+}
+
+### Delete location
+DELETE {{host}}/api/locations/66e7445283b91bc7748da20b
