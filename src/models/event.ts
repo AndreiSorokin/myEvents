@@ -17,7 +17,7 @@ const eventSchema = new Schema<IEvent>({
     required: true,
   },
   attendees: [{ type: Schema.Types.ObjectId, ref: "User" }], // Array of User IDs (many-to-many)
-  images: [{ type: String }]
+  images: { type: [String] }
 });
 
 // JSON serialization for eventSchema

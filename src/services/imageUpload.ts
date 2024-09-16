@@ -1,4 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
+import dotenv from 'dotenv';
+dotenv.config();
 
 cloudinary.config({
    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,6 +9,8 @@ cloudinary.config({
 });
 
 export async function uploadImageToCloudinary(fileBuffer: Buffer, fileName: string): Promise<string> {
+   console.log('fileBuffer', fileBuffer);
+   console.log('fileName', fileName);
    try {
       const cleanFileName = fileName.endsWith('.png') ? fileName.slice(0, -4) : fileName;
 
