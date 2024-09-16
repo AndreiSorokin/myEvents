@@ -14,4 +14,5 @@ export interface IEvent extends Document {
   event_link: string;
   event_type: EventType;
   attendees: IUser["_id"][]; // Array of user IDs (many-to-many relationship)
+  images: string[]; // Array of image URLs
 }

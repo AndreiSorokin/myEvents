@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import eventService from "../services/eventService";
+import { uploadImageToCloudinary } from "../services/imageUpload";
 
 // Create a new event
 export const createEvent = async (
@@ -8,6 +9,16 @@ export const createEvent = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    let imageUrls = [];
+        if (req.files) {
+            const files = req.files as Express.Multer.File[];
+            for (const file of files) {
+                const imageUrl = await uploadImageToCloudinary(file.buffer, file.originalname);
+                imageUrls.push(imageUrl);
+            }
+        } else {
+            imageUrls = req.body.images || [];
+        }
     const newEvent = await eventService.createEvent(req.body);
     res.status(201).json(newEvent);
   } catch (error) {

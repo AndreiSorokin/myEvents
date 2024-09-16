@@ -5,6 +5,7 @@ import {
   InternalServerError,
   BadRequestError,
 } from "../errors/ApiError";
+import { UserModel } from "../models/user";
 
 // Create a new event
 export const createEvent = async (
@@ -20,15 +21,28 @@ export const createEvent = async (
     event_link,
     event_type,
     attendees,
+    images
   } = eventData;
 
-  try {
-    // Check if an event with the same name already exists
-    const existingEvent = await EventModel.findOne({ name });
-    if (existingEvent) {
-      throw new BadRequestError("An event with this name already exists.");
-    }
+  console.log(eventData)
 
+  // Check if the organizer exists
+  const isOrganizerExists = await UserModel.findById(organizer);
+  if(!isOrganizerExists) {
+    throw new BadRequestError("Organizer not found");
+  }
+  // Check if an event with the same name already exists
+  const existingEvent = await EventModel.findOne({ name });
+  if (existingEvent) {
+    throw new BadRequestError("An event with this name already exists.");
+  }
+
+  //Check if all required fields are provided
+  if(!name || !description || !location || !organizer || !date || !price ||!event_type) {
+    throw new BadRequestError("Ensure you have added all necessary information")
+  }
+
+  try {
     // Create the new event
     const newEvent = new EventModel({
       name,
@@ -40,6 +54,7 @@ export const createEvent = async (
       event_link,
       event_type,
       attendees,
+      images
     });
 
     // Save the new event to the database
