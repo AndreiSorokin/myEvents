@@ -24,8 +24,31 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
       role,
     });
     return await newUser.save();
-  } catch (error: any) {
-    throw new InternalServerError("Error creating user");
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Update user password by user id
+export const updateUserPassword = async (
+  id: string,
+  newPassword: string
+): Promise<IUser> => {
+  try {
+    const user = await UserModel.findById(id);
+    // Check if user exist
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    // Check if the new password is provided and not empty
+    if (!newPassword || newPassword.trim() === "") {
+      throw new BadRequestError("New password is required and cannot be empty");
+    }
+    user.password = newPassword;
+    return await user.save();
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -41,7 +64,7 @@ export const findUserById = async (id: string): Promise<IUser> => {
     }
     return user;
   } catch (error) {
-    throw new InternalServerError("Error fetching user by ID");
+    throw error;
   }
 };
 
@@ -58,7 +81,7 @@ export const fetchAllUsers = async (
     const total = await UserModel.countDocuments();
     return { users, total };
   } catch (error) {
-    throw new InternalServerError("Error fetching users");
+    throw error;
   }
 };
 
@@ -78,7 +101,7 @@ export const updateUser = async (
 
     return updatedUser;
   } catch (error) {
-    throw new InternalServerError("Error updating user");
+    throw error;
   }
 };
 
@@ -91,12 +114,13 @@ export const deleteUser = async (id: string): Promise<void> => {
       throw new NotFoundError("User not found");
     }
   } catch (error) {
-    throw new InternalServerError("Error deleting user");
+    throw error;
   }
 };
 
 export default {
   createUser,
+  updateUserPassword,
   findUserById,
   fetchAllUsers,
   updateUser,

@@ -6,10 +6,18 @@ POST {{host}}/api/users
 Content-Type: application/json
 
 {
-  "name": "Alice Johnson",
-  "email": "alice.johnson@example.com",
+  "name": "Bob Anderson",
+  "email": "bob.anderson@example.com",
   "password": "Password123!",
-  "role": "organizer"
+  "role": "user"
+}
+
+### Update user password by ID
+PUT {{host}}/api/users/{{userId}}/update-password
+Content-Type: application/json
+
+{
+  "password": "Password123!"
 }
 
 ### Get all users (with pagination)
