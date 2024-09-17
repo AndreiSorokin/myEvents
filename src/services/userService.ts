@@ -1,8 +1,4 @@
-import {
-  BadRequestError,
-  InternalServerError,
-  NotFoundError,
-} from "../errors/ApiError";
+import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { IUser } from "../interfaces/IUser";
 import { UserModel } from "../models/user";
 
