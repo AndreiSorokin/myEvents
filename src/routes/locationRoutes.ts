@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   createLocation,
   getLocationById,
@@ -7,9 +8,12 @@ import {
   deleteLocation,
 } from "../controllers/locationController";
 
-const router = Router();
+import multer from 'multer';
 
-router.post("/locations", createLocation);
+const router = Router();
+const upload = multer();
+
+router.post("/locations", upload.none(), createLocation);
 router.get("/locations", getAllLocations);
 router.get("/locations/:id", getLocationById);
 router.put("/locations/:id", updateLocation);
