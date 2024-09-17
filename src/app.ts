@@ -20,10 +20,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", addressRoutes);
-app.use("/api", locationRoutes);
-app.use("/api", userRoutes);
-app.use("/api", eventRoutes);
+app.use("/api/v1/addresses", addressRoutes);
+app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/events", eventRoutes);
 
 // Global error handling middleware
 app.use(errorHandler);

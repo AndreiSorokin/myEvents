@@ -13,10 +13,10 @@ import multer from 'multer';
 const router = Router();
 const upload = multer();
 
-router.post("/locations", upload.none(), createLocation);
-router.get("/locations", getAllLocations);
-router.get("/locations/:id", getLocationById);
-router.put("/locations/:id", updateLocation);
-router.delete("/locations/:id", deleteLocation);
+router.post("/", upload.none(), createLocation);
+router.get("/", getAllLocations);
+router.get("/:id", getLocationById);
+router.put("/:id", updateLocation);
+router.delete("/:id", deleteLocation);
 
 export default router;
