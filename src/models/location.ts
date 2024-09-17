@@ -6,17 +6,19 @@ const LocationSchema = new Schema<ILocation>({
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
   address: {
-    type: AddressModel.schema,
-    required: true,
+    country: { type: String, required: true },
+    city: { type: String, required: true },
+    district: { type: String },
+    post_code: { type: String, required: true },
   },
 });
 
-LocationSchema.set('toJSON', {
+LocationSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id;
     delete returnedObject._id;
     delete returnedObject.__v;
-  }
-})
+  },
+});
 
 export const LocationModel = model<ILocation>("Location", LocationSchema);
