@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import passport from "passport";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorMiddleware";
+import addressRoutes from "./routes/addressRoutes";
 import locationRoutes from "./routes/locationRoutes";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/api", addressRoutes);
 app.use("/api", locationRoutes);
 app.use("/api", userRoutes);
 app.use("/api", eventRoutes);
