@@ -1,21 +1,51 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
-@userId = 66e4736af452f73c4fdb0196
+@userId = 66ead78b49bac489378931f2
+@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWFkNzhiNDliYWM0ODkzNzg5MzFmMiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI2NjY2NzI5LCJleHAiOjE3MjY2NzAzMjl9.PenkaNU19e2Xbdgzlr3JoteHDym4puaDsQRFTvFrHls
+@refreshToken = your_refresh_token_here
+@userEmail = john@example.com
 
 ### Create a new user
 POST {{host}}{{apiversion}}/users 
 Content-Type: application/json
 
 {
-  "name": "Bob Anderson",
-  "email": "bob.anderson@example.com",
+  "name": "Charlie Thompson",
+  "email": "charlie.thompson@example.com",
   "password": "Password123!",
   "role": "user"
+}
+
+### Login 
+POST {{host}}{{apiversion}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "NewPassword123!"
+}
+
+### Refresh Token
+POST {{host}}{{apiversion}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "token": "{{refreshToken}}"
+}
+
+### Reset Password
+POST {{host}}{{apiversion}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "newPassword": "NewPassword123!"
 }
 
 ### Update user password by ID
 PUT {{host}}{{apiversion}}/users/{{userId}}/update-password
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
     "currentPassword": "Password123!",
@@ -24,13 +54,16 @@ Content-Type: application/json
 
 ### Get all users (with pagination)
 GET {{host}}{{apiversion}}/users?page=1&limit=10
+Authorization: Bearer {{jwtToken}}
 
 ### Get a user by ID
 GET {{host}}{{apiversion}}/users/{{userId}}
+Authorization: Bearer {{jwtToken}}
 
 ### Update a user by ID
 PUT {{host}}{{apiversion}}/users/{{userId}}
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "name": "Michael Smith Updated",
@@ -39,3 +72,4 @@ Content-Type: application/json
 
 ### Delete a user by ID
 DELETE {{host}}{{apiversion}}/users/{{userId}}
+Authorization: Bearer {{jwtToken}}
