@@ -1,7 +1,8 @@
 @host = http://localhost:3003
+@apiversion = /api/v1
 
 ### Create a new address
-POST {{host}}/api/addresses
+POST {{host}}{{apiversion}}/addresses
 Content-Type: application/json
 
 {
@@ -13,13 +14,13 @@ Content-Type: application/json
 
 
 ### Get All addresses
-GET {{host}}/api/addresses
+GET {{host}}{{apiversion}}/addresses
 
 ### Get address by ID
-GET {{host}}/api/addresses/66e939c045c8ab4b09b6cf0c
+GET {{host}}{{apiversion}}/addresses/66eae56b4238b0599ec7e4a7
 
 ### Update address
-PUT {{host}}/api/addresses/66e9392fd6d214e059a0a207
+PUT {{host}}{{apiversion}}/addresses/66eae56b4238b0599ec7e4a7
 Content-Type: application/json
 
 {
@@ -30,4 +31,4 @@ Content-Type: application/json
 }
 
 ### Delete address
-DELETE {{host}}/api/addresses/66e93a2345c8ab4b09b6cf10
+DELETE {{host}}{{apiversion}}/addresses/66eae56b4238b0599ec7e4a7
