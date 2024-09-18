@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser>({
   events: [{ type: Schema.Types.ObjectId, ref: "Event" }], // Reference to Event IDs (many-to-many)
 });
 
-// Password hashing middleware before saving a new user
+// Password hashing middleware before saving a new user or updating password
 userSchema.pre("save", async function (next) {
   const user = this as IUser;
 
@@ -23,26 +23,9 @@ userSchema.pre("save", async function (next) {
   if (!user.isModified("password")) return next();
 
   try {
-    // Hash the password with a salt round of 10
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(user.password, salt);
     user.password = hashedPassword;
-    next();
-  } catch (error) {
-    return next(error as Error);
-  }
-});
-
-// Password hashing middleware before updating user password
-userSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate() as { $set: { password?: string } };
-  if (!update.$set || !update.$set.password) {
-    return next();
-  }
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(update.$set.password, salt);
-    update.$set.password = hashedPassword;
     next();
   } catch (error) {
     return next(error as Error);
