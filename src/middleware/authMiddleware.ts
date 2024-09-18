@@ -10,7 +10,6 @@ export const authorizeRoles = (roles: string[]) => {
         .status(403)
         .json({ message: "Access denied. Insufficient permissions." });
     }
-
     next();
   };
 };
