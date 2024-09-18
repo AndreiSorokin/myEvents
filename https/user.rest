@@ -10,10 +10,10 @@ POST {{host}}{{apiversion}}/users
 Content-Type: application/json
 
 {
-  "name": "Charlie Thompson",
-  "email": "charlie.thompson@example.com",
+  "name": "Admin",
+  "email": "admin@example.com",
   "password": "Password123!",
-  "role": "user"
+  "role": "admin"
 }
 
 ### Login 
