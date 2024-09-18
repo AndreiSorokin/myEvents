@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { IUser } from "../interfaces/IUser";
 import { BadRequestError, NotFoundError } from "../errors/ApiError";
+import { console } from "inspector";
 
 // Authenticate user credentials and return tokens
 export const authenticateUser = async (email: string, password: string) => {
@@ -11,7 +12,10 @@ export const authenticateUser = async (email: string, password: string) => {
     throw new BadRequestError("Invalid email or password");
   }
 
+  console.log("Comparing passwords:", password, user.password);
   const isValidPassword = await bcrypt.compare(password, user.password);
+  console.log("Password match result:", isValidPassword);
+
   if (!isValidPassword) {
     throw new BadRequestError("Invalid email or password");
   }
@@ -41,12 +45,9 @@ export const resetUserPassword = async (email: string, newPassword: string) => {
   if (!user) {
     throw new NotFoundError("User not found");
   }
-
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   user.password = hashedPassword;
-  await user.save();
-
-  return { message: "Password updated successfully" };
+  return await user.save();
 };
 
 // Validate refresh token
