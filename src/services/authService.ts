@@ -3,16 +3,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { IUser } from "../interfaces/IUser";
 import { BadRequestError, NotFoundError } from "../errors/ApiError";
-import { console } from "inspector";
 
 // Authenticate user credentials and return tokens
 export const authenticateUser = async (email: string, password: string) => {
   const user = await UserModel.findOne({ email });
   if (!user) {
-    throw new BadRequestError("Invalid email or password");
+    throw new NotFoundError("User not found");
   }
+  // Debug password comparison
+  console.log("Password provided:", password);
+  console.log("Hashed password in DB:", user.password);
 
-  console.log("Comparing passwords:", password, user.password);
   const isValidPassword = await bcrypt.compare(password, user.password);
   console.log("Password match result:", isValidPassword);
 
@@ -40,14 +41,22 @@ export const authenticateUser = async (email: string, password: string) => {
 };
 
 // Reset user password
-export const resetUserPassword = async (email: string, newPassword: string) => {
-  const user = await UserModel.findOne({ email });
-  if (!user) {
-    throw new NotFoundError("User not found");
+export const resetUserPassword = async (
+  email: string,
+  newPassword: string
+): Promise<IUser> => {
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    console.log("New password hashed:", hashedPassword);
+    return await user.save();
+  } catch (error) {
+    throw error;
   }
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  user.password = hashedPassword;
-  return await user.save();
 };
 
 // Validate refresh token
