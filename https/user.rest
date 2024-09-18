@@ -1,25 +1,34 @@
 @host = http://localhost:3003
+@apiversion = /api/v1
 @userId = 66e4736af452f73c4fdb0196
 
 ### Create a new user
-POST {{host}}/api/users 
+POST {{host}}{{apiversion}}/users 
 Content-Type: application/json
 
 {
-  "name": "Alice Johnson",
-  "email": "alice.johnson@example.com",
+  "name": "Bob Anderson",
+  "email": "bob.anderson@example.com",
   "password": "Password123!",
-  "role": "organizer"
+  "role": "user"
+}
+
+### Update user password by ID
+PUT {{host}}{{apiversion}}/users/{{userId}}/update-password
+Content-Type: application/json
+
+{
+  "password": "Password123!"
 }
 
 ### Get all users (with pagination)
-GET {{host}}/api/users?page=1&limit=10
+GET {{host}}{{apiversion}}/users?page=1&limit=10
 
 ### Get a user by ID
-GET {{host}}/api/users/{{userId}}
+GET {{host}}{{apiversion}}/users/{{userId}}
 
 ### Update a user by ID
-PUT {{host}}/api/users/{{userId}}
+PUT {{host}}{{apiversion}}/users/{{userId}}
 Content-Type: application/json
 
 {
@@ -28,4 +37,4 @@ Content-Type: application/json
 }
 
 ### Delete a user by ID
-DELETE {{host}}/api/users/{{userId}}
+DELETE {{host}}{{apiversion}}/users/{{userId}}

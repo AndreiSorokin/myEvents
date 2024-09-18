@@ -15,6 +15,27 @@ export const createUser = async (
   }
 };
 
+// Update user password by ID
+export const updateUserPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { password } = req.body;
+
+    const updatedUser = await userService.updateUserPassword(
+      req.params.id,
+      password
+    );
+    res
+      .status(200)
+      .json({ message: "Password updated successfully", user: updatedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get user by ID
 export const getUserById = async (
   req: Request,
