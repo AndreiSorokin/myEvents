@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import userService from "../services/userService";
+import { BadRequestError } from "../errors/ApiError";
+
+import bcrypt from "bcrypt";
 
 // Create a new user
 export const createUser = async (
@@ -22,11 +25,25 @@ export const updateUserPassword = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { password } = req.body;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword ||!newPassword) {
+      throw new BadRequestError("Please provide current and new passwords")
+    }
+
+    const userData = await userService.findUserById(req.params.id);
+    const hashedPassword = userData.password;
+
+    const isPasswordCorrect = await bcrypt.compare(currentPassword, hashedPassword);
+
+    if (!isPasswordCorrect) {
+      throw new BadRequestError("Incorrect password");
+    }
 
     const updatedUser = await userService.updateUserPassword(
       req.params.id,
-      password
+      currentPassword,
+      newPassword
     );
     res
       .status(200)

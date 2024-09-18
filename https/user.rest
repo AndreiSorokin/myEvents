@@ -18,7 +18,8 @@ PUT {{host}}{{apiversion}}/users/{{userId}}/update-password
 Content-Type: application/json
 
 {
-  "password": "Password123!"
+    "currentPassword": "Password123!",
+    "newPassword": "Password1234!"
 }
 
 ### Get all users (with pagination)

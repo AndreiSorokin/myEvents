@@ -2,6 +2,8 @@ import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { IUser } from "../interfaces/IUser";
 import { UserModel } from "../models/user";
 
+import bcrypt from "bcrypt";
+
 // Create a new user
 export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   const { name, email, password, role } = userData;
@@ -28,6 +30,7 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
 // Update user password by user id
 export const updateUserPassword = async (
   id: string,
+  currentPassword: string,
   newPassword: string
 ): Promise<IUser> => {
   try {
@@ -38,10 +41,11 @@ export const updateUserPassword = async (
     }
 
     // Check if the new password is provided and not empty
-    if (!newPassword || newPassword.trim() === "") {
-      throw new BadRequestError("New password is required and cannot be empty");
+    if (!newPassword || newPassword.trim() === "" || !currentPassword || currentPassword.trim() === "") {
+      throw new BadRequestError("Please provide current and new passwords");
     }
-    user.password = newPassword;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
     return await user.save();
   } catch (error) {
     throw error;
