@@ -10,13 +10,8 @@ export const authenticateUser = async (email: string, password: string) => {
   if (!user) {
     throw new NotFoundError("User not found");
   }
-  // Debug password comparison
-  console.log("Password provided:", password);
-  console.log("Hashed password in DB:", user.password);
 
   const isValidPassword = await bcrypt.compare(password, user.password);
-  console.log("Password match result:", isValidPassword);
-
   if (!isValidPassword) {
     throw new BadRequestError("Invalid email or password");
   }
@@ -50,9 +45,7 @@ export const resetUserPassword = async (
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    console.log("New password hashed:", hashedPassword);
+    user.password = newPassword;
     return await user.save();
   } catch (error) {
     throw error;
