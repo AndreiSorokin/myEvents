@@ -3,7 +3,8 @@ import { IAddress } from "../interfaces/IAddress";
 import { AddressModel } from "../models/address";
 
 const createAddress = async (addressData: IAddress): Promise<IAddress> => {
-  return await addressData.save();
+  const newAddress = new AddressModel(addressData);
+  return await newAddress.save();
 };
 
 const getAllAddresses = async (): Promise<IAddress[]> => {

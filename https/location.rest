@@ -1,7 +1,8 @@
 @host = http://localhost:3003
+@apiversion = /api/v1
 
 ### Create a new location
-POST {{host}}/api/locations
+POST {{host}}{{apiversion}}/locations
 Content-Type: application/json
 
 {
@@ -16,13 +17,13 @@ Content-Type: application/json
 }
 
 ### Get All locations
-GET {{host}}/api/locations
+GET {{host}}{{apiversion}}/locations
 
 ### Get location by ID
-GET {{host}}/api/locations/66e746c8ef8f1c8ffcc722ed
+GET {{host}}{{apiversion}}/locations/66eae5264238b0599ec7e4a0
 
 ### Update location
-PUT {{host}}/api/locations/66e3452b9d4ec19563785288
+PUT {{host}}{{apiversion}}/locations/66eae5264238b0599ec7e4a0
 Content-Type: application/json
 
 {
@@ -37,4 +38,4 @@ Content-Type: application/json
 }
 
 ### Delete location
-DELETE {{host}}/api/locations/66e93c898ef08c78a744a331
+DELETE {{host}}{{apiversion}}/locations/66eaf196e731e0ad487d5269
