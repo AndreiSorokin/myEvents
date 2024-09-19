@@ -71,25 +71,25 @@ npm run dev
 
 ## Libraries
 
-| Library                | Purpose                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **bcrypt**       | Library for hashing and comparing passwords securely.                                                       |
-| **cloudinary**   | A service to manage images and videos in the cloud, used for uploading and manipulating media files.        |
-| **cors**         | Enables Cross-Origin Resource Sharing (CORS) for handling requests from different origins.                  |
-| **dotenv**       | Loads environment variables from a `.env` file into `process.env`.                                      |
-| **express**      | Fast, unopinionated web framework for building RESTful APIs in Node.js.                                     |
-| **jsonwebtoken** | Used to create and verify JSON Web Tokens (JWT) for authentication purposes.                                |
+| Library          | Purpose                                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| **bcrypt**       | Library for hashing and comparing passwords securely.                                                      |
+| **cloudinary**   | A service to manage images and videos in the cloud, used for uploading and manipulating media files.       |
+| **cors**         | Enables Cross-Origin Resource Sharing (CORS) for handling requests from different origins.                 |
+| **dotenv**       | Loads environment variables from a `.env` file into `process.env`.                                         |
+| **express**      | Fast, unopinionated web framework for building RESTful APIs in Node.js.                                    |
+| **jsonwebtoken** | Used to create and verify JSON Web Tokens (JWT) for authentication purposes.                               |
 | **mongoose**     | ODM (Object Data Modeling) library for MongoDB and Node.js, helps in managing MongoDB schemas and queries. |
-| **multer**       | Middleware for handling `multipart/form-data`, used primarily for file uploads.                           |
-| **nodemailer**   | Library for sending emails from Node.js applications.                                                       |
-| **nodemon**      | Tool that automatically restarts the Node.js application when file changes in the directory are detected.   |
-| **passport**     | Authentication middleware for Node.js, supports various authentication methods (local, OAuth, etc.).        |
-| **uuid**         | Generates universally unique identifiers (UUIDs).                                                           |
-| Sinon                  | For stubbing and mocking (test)                                                                             |
-| Jest                   | JavaScript Testing Framework                                                                                |
-| Supertest              | Testing HTTP endpoints                                                                                      |
-|                        |                                                                                                             |
-|                        |                                                                                                             |
+| **multer**       | Middleware for handling `multipart/form-data`, used primarily for file uploads.                            |
+| **nodemailer**   | Library for sending emails from Node.js applications.                                                      |
+| **nodemon**      | Tool that automatically restarts the Node.js application when file changes in the directory are detected.  |
+| **passport**     | Authentication middleware for Node.js, supports various authentication methods (local, OAuth, etc.).       |
+| **uuid**         | Generates universally unique identifiers (UUIDs).                                                          |
+| Sinon            | For stubbing and mocking (test)                                                                            |
+| Jest             | JavaScript Testing Framework                                                                               |
+| Supertest        | Testing HTTP endpoints                                                                                     |
+|                  |                                                                                                            |
+|                  |                                                                                                            |
 
 ## Database Schema and ERD
 
@@ -123,3 +123,5 @@ This project is organized into various folders and files for better modularity a
 ├── README.md              # Project documentation (this file)
 ├── tsconfig.json          # TypeScript configuration file
 ```
+
+## API Endpoints

@@ -1,5 +1,6 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
+@address_id = 66ebc74a19656827a51dc2e5
 
 ### Create a new location
 POST {{host}}{{apiversion}}/locations
@@ -8,34 +9,24 @@ Content-Type: application/json
 {
   "latitude": 60.1699,
   "longitude": 24.9384,
-  "address": {
-    "country": "Finland",
-    "city": "Helsinki",
-    "district": "Kallio",
-    "post_code": "00530"
-  }
+  "address": "{{address_id}}"
 }
 
 ### Get All locations
 GET {{host}}{{apiversion}}/locations
 
 ### Get location by ID
-GET {{host}}{{apiversion}}/locations/66eae5264238b0599ec7e4a0
+GET {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7
 
 ### Update location
-PUT {{host}}{{apiversion}}/locations/66eae5264238b0599ec7e4a0
+PUT {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7
 Content-Type: application/json
 
 {
   "latitude": 60.1699,
   "longitude": 24.9384,
-  "address": {
-    "country": "Finland",
-    "city": "Vaasa",
-    "district": "Leipatehdas",
-    "post_code": "65100"
-  }
+  "address": "66ebceb6648c738ce46894ce"
 }
 
 ### Delete location
-DELETE {{host}}{{apiversion}}/locations/66eaf196e731e0ad487d5269
+DELETE {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7

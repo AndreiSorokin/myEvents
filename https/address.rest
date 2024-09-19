@@ -1,7 +1,7 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
 
-### Create a new address
+### Create a new address 1
 POST {{host}}{{apiversion}}/addresses
 Content-Type: application/json
 
@@ -12,6 +12,18 @@ Content-Type: application/json
   "post_code": "00530"
 }
 
+### Create a new address 2
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+  "country": "Finland",
+  "city": "Vaasa",
+  "district": "Vaasa Centrum",
+  "post_code": "65100",
+  "street": "Hovioikeudenpuistikko",
+  "address_number": "10B15"
+}
 
 ### Get All addresses
 GET {{host}}{{apiversion}}/addresses
@@ -31,4 +43,4 @@ Content-Type: application/json
 }
 
 ### Delete address
-DELETE {{host}}{{apiversion}}/addresses/66eae56b4238b0599ec7e4a7
+DELETE {{host}}{{apiversion}}/addresses/66ebceb6648c738ce46894ce

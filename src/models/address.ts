@@ -5,7 +5,10 @@ const AddressSchema = new Schema<IAddress>({
   country: { type: String, required: true },
   city: { type: String, required: true },
   district: { type: String },
+  ward: { type: String },
   post_code: { type: String, required: true },
+  street: { type: String},
+  address_number: { type: String},
 });
 
 AddressSchema.set("toJSON", {
