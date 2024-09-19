@@ -1,10 +1,30 @@
+import { isValidObjectId } from "mongoose";
 import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { IAddress } from "../interfaces/IAddress";
 import { AddressModel } from "../models/address";
 
 const createAddress = async (addressData: IAddress): Promise<IAddress> => {
-  const newAddress = new AddressModel(addressData);
-  return await newAddress.save();
+  try {
+    if (!addressData.country) {
+      throw new BadRequestError("Country is required");
+    }
+
+    if (!addressData.city) {
+      throw new BadRequestError("City is required");
+    }
+
+    if (!addressData.post_code) {
+      throw new BadRequestError("Post code is required");
+    }
+
+    const newAddress = new AddressModel(addressData);
+    return await newAddress.save();
+  } catch (error: any) {
+    if (error.name === "ValidationError") {
+      throw new BadRequestError(error.message);
+    }
+    throw error;
+  }
 };
 
 const getAllAddresses = async (): Promise<IAddress[]> => {
@@ -14,6 +34,10 @@ const getAllAddresses = async (): Promise<IAddress[]> => {
 const getAddressById = async (id: string): Promise<IAddress> => {
   if (!id) {
     throw new Error("Address ID is required");
+  }
+
+  if (!isValidObjectId(id)) {
+    throw new BadRequestError("Invalid Address ID format");
   }
 
   const foundAddress = await AddressModel.findById(id);
@@ -31,6 +55,10 @@ const updateAddress = async (
 ): Promise<IAddress | null> => {
   if (!id) {
     throw new BadRequestError("Address ID is required");
+  }
+
+  if (!isValidObjectId(id)) {
+    throw new BadRequestError("Invalid Address ID format");
   }
 
   const updatedAddress = await AddressModel.findByIdAndUpdate(id, addressData, {

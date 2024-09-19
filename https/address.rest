@@ -6,7 +6,6 @@ POST {{host}}{{apiversion}}/addresses
 Content-Type: application/json
 
 {
-  "country": "Finland",
   "city": "Helsinki",
   "district": "Kallio",
   "post_code": "00530"
