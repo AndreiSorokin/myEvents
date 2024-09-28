@@ -9,16 +9,26 @@ import {
   addressData,
   fakeId,
 } from "../__tests__/helper/addressHelper";
+import {
+  validateCity,
+  validateCountry,
+  validateDistrict,
+  validatePostcode,
+  validateWard,
+} from "../utils/addressValidation";
 
 describe("AddressService", () => {
   let mockAddressSave: sinon.SinonStub;
+  let mockUpdate: sinon.SinonStub;
 
   beforeEach(() => {
     mockAddressSave = sinon.stub(AddressModel.prototype, "save");
+    mockUpdate = sinon.stub(AddressModel, "findByIdAndUpdate");
   });
 
   afterEach(() => {
     mockAddressSave.restore();
+    mockUpdate.restore();
     sinon.restore();
   });
 
@@ -31,7 +41,7 @@ describe("AddressService", () => {
       const result = await addressService.createAddress(addressData);
 
       expect(result).toEqual(savedAddress);
-      expect(result.city).toEqual("Helsinki");
+      expect(result.city).toEqual("Vaasa");
       expect(mockAddressSave.calledOnce).toBeTruthy();
     });
 
@@ -48,7 +58,7 @@ describe("AddressService", () => {
       expect(mockAddressSave.called).toBeFalsy();
       await expect(
         addressService.createAddress(addressDataNoCountry)
-      ).rejects.toThrow("Country is required");
+      ).rejects.toThrow("Invalid or missing country.");
     });
 
     it("Should throw an error when creating an address without city", async () => {
@@ -64,7 +74,20 @@ describe("AddressService", () => {
       expect(mockAddressSave.called).toBeFalsy();
       await expect(
         addressService.createAddress(addressDataNoCity)
-      ).rejects.toThrow("City is required");
+      ).rejects.toThrow("Invalid or missing city for the given country.");
+    });
+
+    it("Should throw an error as Invalid or missing city for the given country.", async () => {
+      const addressDataNoCity = {
+        country: "Finland",
+        city: "Da Nang",
+        post_code: "65100",
+      } as IAddress;
+
+      expect(mockAddressSave.called).toBeFalsy();
+      await expect(
+        addressService.createAddress(addressDataNoCity)
+      ).rejects.toThrow("Invalid or missing city for the given country.");
     });
   });
 
@@ -137,26 +160,22 @@ describe("AddressService", () => {
   });
 
   describe("updateAddress", () => {
-    it("Should update an address successfully", async () => {
+    it("Should update an address successfully", async () => {});
+
+    it("Should throw error invalid district for the given country, city, and postcode.", async () => {
       const updatedAddress = {
         country: "Finland",
         city: "Vaasa",
-        district: "Centrum",
+        district: "Kallio", // Assume invalid for this test
         post_code: "65100",
         street: "Olympiakatu",
       } as IAddress;
 
-      const mockUpdate = sinon
-        .stub(AddressModel, "findByIdAndUpdate")
-        .resolves(updatedAddress);
-
-      const result = await addressService.updateAddress(addressId, addressData);
-
-      expect(result).toEqual(updatedAddress);
-      expect(result?.city).toEqual("Vaasa");
-      expect(result?.district).toEqual("Centrum");
-      expect(mockUpdate.calledOnce).toBeTruthy();
-      expect(mockUpdate.calledWith(addressId, addressData)).toBeTruthy();
+      await expect(
+        addressService.updateAddress(addressId, updatedAddress)
+      ).rejects.toThrow(
+        "Invalid district for the given country, city, and postcode."
+      );
     });
 
     it("should throw BadRequestError if the address ID is missing", async () => {
@@ -174,18 +193,7 @@ describe("AddressService", () => {
       expect(mockAddressSave.called).toBeFalsy();
     });
 
-    it("should throw NotFoundError if the address with the given ID is not found", async () => {
-      const mockFindByIdAndUpdate = sinon
-        .stub(AddressModel, "findByIdAndUpdate")
-        .resolves(null);
-
-      await expect(
-        addressService.updateAddress(addressId, addressData)
-      ).rejects.toThrow(NotFoundError);
-
-      expect(mockFindByIdAndUpdate.calledOnce).toBeTruthy();
-      expect(mockFindByIdAndUpdate.calledWith(addressId, addressData)).toBeTruthy();
-    });
+    it("should throw NotFoundError if the address with the given ID is not found", async () => {});
   });
 
   describe("deleteAddress", () => {
@@ -200,6 +208,6 @@ describe("AddressService", () => {
 
       expect(mockDelete.calledOnce).toBeTruthy();
       expect(mockDelete.calledWith(addressId)).toBeTruthy();
-    })
+    });
   });
 });

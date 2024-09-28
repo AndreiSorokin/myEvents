@@ -2,19 +2,50 @@ import { isValidObjectId } from "mongoose";
 import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { IAddress } from "../interfaces/IAddress";
 import { AddressModel } from "../models/address";
+import {
+  validateCity,
+  validateCountry,
+  validateDistrict,
+  validatePostcode,
+  validateWard,
+} from "../utils/addressValidation";
 
 const createAddress = async (addressData: IAddress): Promise<IAddress> => {
   try {
-    if (!addressData.country) {
-      throw new BadRequestError("Country is required");
+    const { country, city, post_code, district, ward } = addressData;
+
+    if (!country || !(await validateCountry(country))) {
+      throw new BadRequestError("Invalid or missing country.");
     }
 
-    if (!addressData.city) {
-      throw new BadRequestError("City is required");
+    if (!city || !(await validateCity(country, city))) {
+      throw new BadRequestError(
+        "Invalid or missing city for the given country."
+      );
     }
 
-    if (!addressData.post_code) {
-      throw new BadRequestError("Post code is required");
+    if (!post_code || !(await validatePostcode(country, city, post_code))) {
+      throw new BadRequestError(
+        "Invalid or missing postcode for the given country and city."
+      );
+    }
+
+    if (
+      district &&
+      !(await validateDistrict(country, city, post_code, district))
+    ) {
+      throw new BadRequestError(
+        "Invalid district for the given country, city, and postcode."
+      );
+    }
+
+    if (
+      ward &&
+      !(await validateWard(country, city, post_code, district, ward))
+    ) {
+      throw new BadRequestError(
+        "Invalid ward for the given country, city, postcode, and district."
+      );
     }
 
     const newAddress = new AddressModel(addressData);
@@ -59,6 +90,37 @@ const updateAddress = async (
 
   if (!isValidObjectId(id)) {
     throw new BadRequestError("Invalid Address ID format");
+  }
+
+  const { country, city, post_code, district, ward } = addressData;
+
+  if (country && !(await validateCountry(country))) {
+    throw new BadRequestError("Invalid country.");
+  }
+
+  if (city && !(await validateCity(country, city))) {
+    throw new BadRequestError("Invalid city for the given country.");
+  }
+
+  if (post_code && !(await validatePostcode(country, city, post_code))) {
+    throw new BadRequestError(
+      "Invalid postcode for the given country and city."
+    );
+  }
+
+  if (
+    district &&
+    !(await validateDistrict(country, city, post_code, district))
+  ) {
+    throw new BadRequestError(
+      "Invalid district for the given country, city, and postcode."
+    );
+  }
+
+  if (ward && !(await validateWard(country, city, post_code, district, ward))) {
+    throw new BadRequestError(
+      "Invalid ward for the given country, city, postcode, and district."
+    );
   }
 
   const updatedAddress = await AddressModel.findByIdAndUpdate(id, addressData, {
