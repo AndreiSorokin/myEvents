@@ -32,7 +32,6 @@ const AddressSchema = new Schema<IAddress>({
   },
   post_code: {
     type: String,
-    required: [true, "Postcode is required"],
     validate: {
       validator: async function (value: string) {
         return await validatePostcode(this.country, this.city, value);
@@ -48,7 +47,6 @@ const AddressSchema = new Schema<IAddress>({
         return await validateDistrict(
           this.country,
           this.city,
-          this.post_code,
           value
         );
       },
@@ -63,7 +61,6 @@ const AddressSchema = new Schema<IAddress>({
         return await validateWard(
           this.country,
           this.city,
-          this.post_code,
           this.district,
           value
         );

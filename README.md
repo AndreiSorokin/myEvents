@@ -72,32 +72,32 @@ npm run dev
 
 ## Libraries
 
-| Library                | Purpose                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **bcrypt**       | Library for hashing and comparing passwords securely.                                                       |
-| **cloudinary**   | A service to manage images and videos in the cloud, used for uploading and manipulating media files.        |
-| **cors**         | Enables Cross-Origin Resource Sharing (CORS) for handling requests from different origins.                  |
-| **dotenv**       | Loads environment variables from a `.env` file into `process.env`.                                      |
-| **express**      | Fast, unopinionated web framework for building RESTful APIs in Node.js.                                     |
-| **jsonwebtoken** | Used to create and verify JSON Web Tokens (JWT) for authentication purposes.                                |
+| Library          | Purpose                                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| **bcrypt**       | Library for hashing and comparing passwords securely.                                                      |
+| **cloudinary**   | A service to manage images and videos in the cloud, used for uploading and manipulating media files.       |
+| **cors**         | Enables Cross-Origin Resource Sharing (CORS) for handling requests from different origins.                 |
+| **dotenv**       | Loads environment variables from a `.env` file into `process.env`.                                         |
+| **express**      | Fast, unopinionated web framework for building RESTful APIs in Node.js.                                    |
+| **jsonwebtoken** | Used to create and verify JSON Web Tokens (JWT) for authentication purposes.                               |
 | **mongoose**     | ODM (Object Data Modeling) library for MongoDB and Node.js, helps in managing MongoDB schemas and queries. |
-| **multer**       | Middleware for handling `multipart/form-data`, used primarily for file uploads.                           |
-| **nodemailer**   | Library for sending emails from Node.js applications.                                                       |
-| **nodemon**      | Tool that automatically restarts the Node.js application when file changes in the directory are detected.   |
-| **passport**     | Authentication middleware for Node.js, supports various authentication methods (local, OAuth, etc.).        |
-| **uuid**         | Generates universally unique identifiers (UUIDs).                                                           |
-| **Sinon**        | For stubbing and mocking (test)                                                                             |
-| **Jest**         | JavaScript Testing Framework                                                                                |
-| **Supertest**    | Testing HTTP endpoints                                                                                      |
-| **axios**        | Library for integrating with third party APIs                                                               |
-|                        |                                                                                                             |
+| **multer**       | Middleware for handling `multipart/form-data`, used primarily for file uploads.                            |
+| **nodemailer**   | Library for sending emails from Node.js applications.                                                      |
+| **nodemon**      | Tool that automatically restarts the Node.js application when file changes in the directory are detected.  |
+| **passport**     | Authentication middleware for Node.js, supports various authentication methods (local, OAuth, etc.).       |
+| **uuid**         | Generates universally unique identifiers (UUIDs).                                                          |
+| **Sinon**        | For stubbing and mocking (test)                                                                            |
+| **Jest**         | JavaScript Testing Framework                                                                               |
+| **Supertest**    | Testing HTTP endpoints                                                                                     |
+| **axios**        | Library for integrating with third party APIs                                                              |
+|                  |                                                                                                            |
 
 ## Third party API
 
-| API      | Purpose                                                                      | Info                               |
-| -------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| API      | Purpose                                                                      | Info                                  |
+| -------- | ---------------------------------------------------------------------------- | ------------------------------------- |
 | OpenCage | Converts geographic coordinates into human-readable addresses and vice versa | [OpenCage](https://opencagedata.com/) |
-|          |                                                                              |                                    |
+|          |                                                                              |                                       |
 
 ## Database Schema and ERD
 
@@ -133,3 +133,24 @@ This project is organized into various folders and files for better modularity a
 ```
 
 ## API Endpoints
+
+### 1. Allow Annonymous
+
+- Sign In
+- Sign Up
+- Get All Events
+
+### 2. Allow Admin (Included actions that organizer and user can access)
+
+- Delete User
+
+### 3. Allow Organizer (Included actions that user can access)
+
+- Create an address -> `POST http://localhost:3003/api/v1/addresses` (Have not set the auth rule).
+- Update the address by id -> `PUT http://localhost:3003/api/v1/addresses/[address_id]` (Have not set the auth rule - Must be the same address's creator).
+- Delete the address by id -> `DELETE http://localhost:3003/api/v1/addresses/[address_id]` (Have not set the auth rule - Must be the same address's creator).
+- Create a location -> `CREATE http://localhost:3003/api/v1/locations` (Have not set the auth rule).
+- Update the location by id -> `PUT http://localhost:3003/api/v1/locations/[location_id]` (Have not set the auth rule - Must be the same location's creator).
+- Delete the location by id -> `DELETE http://localhost:3003/v1/locations/[location_id]` (Have not set the auth rule - Must be the same location's creator).
+
+### 4. Allow User

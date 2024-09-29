@@ -53,7 +53,6 @@ const validatePostcode = async (
 const validateDistrict = async (
   country: string,
   city: string,
-  postcode: string,
   district: string
 ): Promise<boolean> => {
   const response = await axios.get(
@@ -61,8 +60,7 @@ const validateDistrict = async (
   );
   const components = response.data.results[0]?.components || {};
   return (
-    components.postcode === postcode &&
-    (components.suburb === district || components.state_district === district)
+    components.suburb === district || components.state_district === district
   );
 };
 
@@ -70,7 +68,6 @@ const validateDistrict = async (
 const validateWard = async (
   country: string,
   city: string,
-  postcode: string,
   district: string,
   ward: string
 ): Promise<boolean> => {
@@ -78,10 +75,17 @@ const validateWard = async (
     `${BASE_URL}&q=${ward},${district},${city},${country}&no_annotations=1&limit=1`
   );
   const components = response.data.results[0]?.components || {};
-  return (
-    components.postcode === postcode &&
-    (components.suburb === ward || components.neighbourhood === ward)
-  );
+
+  const matchedWard =
+    components.suburb?.toLowerCase() === ward.toLowerCase() ||
+    components.neighbourhood?.toLowerCase() === ward.toLowerCase() ||
+    components.quarter?.toLowerCase() === ward.toLowerCase();
+  if (!matchedWard) {
+    console.log("OpenCage returned components:", components);
+    return false;
+  }
+
+  return true;
 };
 
 export {

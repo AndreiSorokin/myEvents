@@ -3,11 +3,7 @@ import mongoose from "mongoose";
 
 import { AddressModel } from "../models/address";
 import addressService from "../services/addressService";
-import {
-  BadRequestError,
-  InternalServerError,
-  NotFoundError,
-} from "../errors/ApiError";
+import { InternalServerError } from "../errors/ApiError";
 
 // TODO: Create an address
 export const createAddress = async (

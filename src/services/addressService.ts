@@ -24,27 +24,21 @@ const createAddress = async (addressData: IAddress): Promise<IAddress> => {
       );
     }
 
-    if (!post_code || !(await validatePostcode(country, city, post_code))) {
+    if (post_code && !(await validatePostcode(country, city, post_code))) {
       throw new BadRequestError(
-        "Invalid or missing postcode for the given country and city."
+        "Invalid postcode for the given country and city."
       );
     }
 
-    if (
-      district &&
-      !(await validateDistrict(country, city, post_code, district))
-    ) {
+    if (district && !(await validateDistrict(country, city, district))) {
       throw new BadRequestError(
-        "Invalid district for the given country, city, and postcode."
+        "Invalid district for the given country and city."
       );
     }
 
-    if (
-      ward &&
-      !(await validateWard(country, city, post_code, district, ward))
-    ) {
+    if (ward && !(await validateWard(country, city, district, ward))) {
       throw new BadRequestError(
-        "Invalid ward for the given country, city, postcode, and district."
+        "Invalid ward for the given country, city, and district."
       );
     }
 
@@ -108,18 +102,15 @@ const updateAddress = async (
     );
   }
 
-  if (
-    district &&
-    !(await validateDistrict(country, city, post_code, district))
-  ) {
+  if (district && !(await validateDistrict(country, city, district))) {
     throw new BadRequestError(
-      "Invalid district for the given country, city, and postcode."
+      "Invalid district for the given country and city."
     );
   }
 
-  if (ward && !(await validateWard(country, city, post_code, district, ward))) {
+  if (ward && !(await validateWard(country, city, district, ward))) {
     throw new BadRequestError(
-      "Invalid ward for the given country, city, postcode, and district."
+      "Invalid ward for the given country, city, and district."
     );
   }
 
