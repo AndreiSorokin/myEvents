@@ -4,5 +4,5 @@ import { Document } from "mongoose";
 export interface ILocation extends Document {
   latitude: number;
   longitude: number;
-  address: IAddress;
+  address: IAddress["_id"];
 }

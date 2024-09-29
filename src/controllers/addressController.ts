@@ -16,11 +16,16 @@ export const createAddress = async (
   next: NextFunction
 ) => {
   try {
-    const { country, city, district, post_code } = req.body;
+    const { country, city, district, ward, post_code, street, address_number } =
+      req.body;
     const address = new AddressModel({
       country,
       city,
+      district,
+      ward,
       post_code,
+      street,
+      address_number,
     });
 
     const newAddress = await addressService.createAddress(address);

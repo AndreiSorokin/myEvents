@@ -12,6 +12,7 @@ This repository contains the server for the event application contributed by And
 
 - [Getting Started](#getting-started)
 - [Libraries](#libraries)
+- [Third party API](#third-party-api)
 - [Database Schema and ERD](#database-schema-and-erd)
 - [Folder structure](#folder-structure)
 - [API Endpoints](#api-endpoints)
@@ -85,11 +86,18 @@ npm run dev
 | **nodemon**      | Tool that automatically restarts the Node.js application when file changes in the directory are detected.   |
 | **passport**     | Authentication middleware for Node.js, supports various authentication methods (local, OAuth, etc.).        |
 | **uuid**         | Generates universally unique identifiers (UUIDs).                                                           |
-| Sinon                  | For stubbing and mocking (test)                                                                             |
-| Jest                   | JavaScript Testing Framework                                                                                |
-| Supertest              | Testing HTTP endpoints                                                                                      |
+| **Sinon**        | For stubbing and mocking (test)                                                                             |
+| **Jest**         | JavaScript Testing Framework                                                                                |
+| **Supertest**    | Testing HTTP endpoints                                                                                      |
+| **axios**        | Library for integrating with third party APIs                                                               |
 |                        |                                                                                                             |
-|                        |                                                                                                             |
+
+## Third party API
+
+| API      | Purpose                                                                      | Info                               |
+| -------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| OpenCage | Converts geographic coordinates into human-readable addresses and vice versa | [OpenCage](https://opencagedata.com/) |
+|          |                                                                              |                                    |
 
 ## Database Schema and ERD
 
@@ -123,3 +131,5 @@ This project is organized into various folders and files for better modularity a
 ├── README.md              # Project documentation (this file)
 ├── tsconfig.json          # TypeScript configuration file
 ```
+
+## API Endpoints
