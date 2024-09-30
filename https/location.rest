@@ -13,10 +13,8 @@ Content-Type: application/json
 ### Get All locations
 GET {{host}}{{apiversion}}/locations
 
-### Get location by country
-GET {{host}}{{apiversion}}/locations/by-country?country=finland
-### Get location by city
-GET {{host}}{{apiversion}}/locations/by-city?city=da_nang
+### Get location by address
+GET {{host}}{{apiversion}}/locations/by-address?address=da-nang,vietnam
 
 ### Get location by ID
 GET {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7

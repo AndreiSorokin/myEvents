@@ -32,64 +32,46 @@ const getAllLocations = async (): Promise<ILocation[]> => {
   return await LocationModel.find().populate("address");
 };
 
-// TODO: Get locations by address's country
-const getLocationsByCountry = async (country: string): Promise<ILocation[]> => {
-  if (!country) {
-    throw new BadRequestError("Country is required");
+// TODO: Get Location by random address's information (i.e. country, city, postal code, district, etc)
+const getLocationsByAddressInfo = async (
+  address: string
+): Promise<ILocation[]> => {
+  if (!address) {
+    throw new BadRequestError("Address information is required");
   }
 
-  // Normalize the country name: remove special characters and multiple spaces
-  const normalizedCountry = country
-    .replace(/[\W_]+/g, " ") // Replace non-alphanumeric characters (hyphens, underscores) with spaces
-    .trim(); // Remove any leading or trailing spaces
+  // Split the address into components using common delimiters (e.g., commas, spaces, hyphens)
+  const addressParts = address.split(/[\s,_-]+/).map((part) => part.trim());
 
-  // Use regex for case-insensitive match and ensure only locations with addresses are returned
+  // Construct the $and query to match all parts against different fields
+  const searchConditions = addressParts.map((part) => ({
+    $or: [
+      { country: new RegExp(part, "i") },
+      { city: new RegExp(part, "i") },
+      { post_code: new RegExp(part, "i") },
+      { district: new RegExp(part, "i") },
+      { ward: new RegExp(part, "i") },
+      { street: new RegExp(part, "i") },
+      { address_number: new RegExp(part, "i") },
+    ],
+  }));
+
+  // Search based on different address fields using the constructed regex
   const locations = await LocationModel.find({
-    address: { $ne: null }, // Exclude locations with null addresses
+    address: { $ne: null },
   }).populate({
     path: "address",
-    match: { country: { $regex: new RegExp(`^${normalizedCountry}$`, "i") } }, // Case-insensitive country match
+    match: {
+      $and: searchConditions, // Ensure all address parts match one of the fields
+    },
   });
 
-  // Filter out any locations where the address doesn't match (in case populate fails)
   const filteredLocations = locations.filter(
     (location) => location.address !== null
   );
 
   return filteredLocations;
 };
-
-// TODO: Get locations by address's city
-const getLocationsByCity = async (city: string): Promise<ILocation[]> => {
-  if (!city) {
-    throw new BadRequestError("City is required");
-  }
-
-  // Normalize the city name: remove special characters and multiple spaces
-  const normalizedCity = city
-    .replace(/[\W_]+/g, " ") // Replace non-alphanumeric characters (hyphens, underscores) with spaces
-    .trim(); // Remove any leading or trailing spaces
-
-  // Use regex for case-insensitive match and ensure only locations with addresses are returned
-  const locations = await LocationModel.find({
-    address: { $ne: null }, // Exclude locations with null addresses
-  }).populate({
-    path: "address",
-    match: { city: { $regex: new RegExp(`^${normalizedCity}$`, "i") } }, // Case-insensitive city match
-  });
-
-  // Filter out any locations where the address doesn't match (in case populate fails)
-  const filteredLocations = locations.filter(
-    (location) => location.address !== null
-  );
-
-  return filteredLocations;
-};
-
-// TODO: Get locations by address's postal code
-// TODO: Get locations by address's district
-// TODO: Get locations by address's ward
-// TODO: Get locations by address's street
 
 const getLocationById = async (id: string): Promise<ILocation> => {
   if (!id) {
@@ -161,8 +143,7 @@ export default {
   createLocation,
   getLocationById,
   getAllLocations,
-  getLocationsByCountry,
-  getLocationsByCity,
+  getLocationsByAddressInfo,
   updateLocation,
   deleteLocation,
 };

@@ -33,40 +33,20 @@ export const getAllLocations = async (
   }
 };
 
-// TODO: Get locations by address's country
-export const getLocationsByCountry = async (
+// TODO: Get locations by address information:
+export const getLocationsByAddressInfo = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const country = req.query.country as string;
-    const locations = await locationService.getLocationsByCountry(country);
+    const address = req.query.address as string;
+    const locations = await locationService.getLocationsByAddressInfo(address);
     res.status(200).json(locations);
   } catch (error: any) {
     next(new InternalServerError(error.message));
   }
 };
-
-// TODO: Get locations by address's city
-export const getLocationsByCity = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const city = req.query.city as string;
-    const locations = await locationService.getLocationsByCity(city);
-    res.status(200).json(locations);
-  } catch (error: any) {
-    next(new InternalServerError(error.message));
-  }
-};
-
-// TODO: Get locations by address's postal code
-// TODO: Get locations by address's district
-// TODO: Get locations by address's ward
-// TODO: Get locations by address's street
 
 // TODO: Get a location by ID
 export const getLocationById = async (

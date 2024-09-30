@@ -4,8 +4,7 @@ import {
   createLocation,
   getLocationById,
   getAllLocations,
-  getLocationsByCountry,
-  getLocationsByCity,
+  getLocationsByAddressInfo,
   updateLocation,
   deleteLocation,
 } from "../controllers/locationController";
@@ -17,8 +16,7 @@ const upload = multer();
 
 router.post("/", upload.none(), createLocation);
 router.get("/", getAllLocations);
-router.get("/by-country", getLocationsByCountry);
-router.get("/by-city", getLocationsByCity);
+router.get("/by-address", getLocationsByAddressInfo);
 router.get("/:id", getLocationById);
 router.put("/:id", updateLocation);
 router.delete("/:id", deleteLocation);
