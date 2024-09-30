@@ -20,6 +20,18 @@ Content-Type: application/json
   "city": "Helsinki",
   "post_code": "0"
 }
+### Create a new address 3 (valid)
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+  "country": "Vietnam",
+  "city": "Da Nang",
+  "district": "Hải Châu District",
+  "ward": "Phường Hải Châu I",
+  "street": "Nguyễn Văn Linh",
+  "address_number": "126"
+}
 
 ### Create a new address 3 (Invalid)
 POST {{host}}{{apiversion}}/addresses

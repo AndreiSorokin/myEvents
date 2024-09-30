@@ -1,31 +1,30 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
-@address_id = 66ebc74a19656827a51dc2e5
+@address_id = 66f8070feb553bbe4e283742
 
 ### Create a new location
 POST {{host}}{{apiversion}}/locations
 Content-Type: application/json
 
 {
-  "latitude": 60.1699,
-  "longitude": 24.9384,
   "address": "{{address_id}}"
 }
 
 ### Get All locations
 GET {{host}}{{apiversion}}/locations
 
+### Get location by address
+GET {{host}}{{apiversion}}/locations/by-address?address=da-nang,vietnam
+
 ### Get location by ID
 GET {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7
 
 ### Update location
-PUT {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7
+PUT {{host}}{{apiversion}}/locations/66f96aed28691090d614ea00
 Content-Type: application/json
 
 {
-  "latitude": 60.1699,
-  "longitude": 24.9384,
-  "address": "66ebceb6648c738ce46894ce"
+  "address": "66f97f6c7eef7ff47803b2c0"
 }
 
 ### Delete location
