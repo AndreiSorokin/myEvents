@@ -1,7 +1,7 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
 @userId = 66ead78b49bac489378931f2
-@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWFkNzhiNDliYWM0ODkzNzg5MzFmMiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI2NjY2NzI5LCJleHAiOjE3MjY2NzAzMjl9.PenkaNU19e2Xbdgzlr3JoteHDym4puaDsQRFTvFrHls
+@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTQ3MzZhZjQ1MmY3M2M0ZmRiMDE5NiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI3ODg0NjcxLCJleHAiOjE3Mjc4ODgyNzF9.OHskTcCkDC1UVYxfgrOIYoq-MQ4a2KwzJYekRntvfzM
 @refreshToken = your_refresh_token_here
 @userEmail = john@example.com
 
