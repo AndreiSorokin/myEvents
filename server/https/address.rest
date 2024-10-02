@@ -1,0 +1,65 @@
+@host = http://localhost:3003
+@apiversion = /api/v1
+
+### Create a new address 1 (Valid)
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+  "country": "Finland",
+  "city": "Vaasa",
+  "post_code": "65320"
+}
+
+### Create a new address 2 (Invalid)
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+  "country": "Finland",
+  "city": "Helsinki",
+  "post_code": "0"
+}
+### Create a new address 3 (valid)
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+  "country": "Vietnam",
+  "city": "Da Nang",
+  "district": "Hải Châu District",
+  "ward": "Phường Hải Châu I",
+  "street": "Nguyễn Văn Linh",
+  "address_number": "126"
+}
+
+### Create a new address 3 (Invalid)
+POST {{host}}{{apiversion}}/addresses
+Content-Type: application/json
+
+{
+    "country": "Finland",
+    "city": "Vaasa",
+    "district": "Palosaari",
+    "post_code": "65320",
+}
+
+### Get All addresses
+GET {{host}}{{apiversion}}/addresses
+
+### Get address by ID
+GET {{host}}{{apiversion}}/addresses/66eae56b4238b0599ec7e4a7
+
+### Update address
+PUT {{host}}{{apiversion}}/addresses/66f800e4dd319a52dc9ad9ce
+Content-Type: application/json
+
+{
+  "country": "Finland",
+  "city": "Vaasa",
+  "district": "Kallio",
+  "post_code": "65200"
+}
+
+### Delete address
+DELETE {{host}}{{apiversion}}/addresses/66f805f3eb553bbe4e283739

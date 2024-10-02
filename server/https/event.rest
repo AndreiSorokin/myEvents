@@ -1,24 +1,21 @@
 @host = http://localhost:3003
 @eventId = 66e47b5bc7fd3303b57c8f0b
+@apiversion = /api/v1
 
 ### Create a new event
-POST {{host}}/api/events
-Content-Type: application/json
+POST {{host}}{{apiversion}}/events
+form-data
 
 {
   "name": "Tech Conference 2024",
   "description": "A leading technology conference.",
-  "location": {
-    "latitude": 60.1699,
-    "longitude": 24.9384,
-    "address": {
-      "country": "Finland",
-      "city": "Helsinki",
-      "district": "Kallio",
-      "post_code": "00530"
-  }
-  },
-  "organizer": "66e4739bf452f73c4fdb019d", 
+  location[latitude]: 60.1699,
+  location[longitude]: 24.9384,
+  location[address][country]: Finland,
+  location[address][city]: Helsinki,
+  location[address][district]: Kallio,
+  location[address][post_code]: 00530,
+  "organizer": "66e4739bf452f73c4fdb019d",
   "date": "2024-09-20T18:30:00.000Z",
   "price": 250,
   "event_link": "https://techconf2024.com",
@@ -27,13 +24,13 @@ Content-Type: application/json
 }
 
 ### Get event by ID
-GET {{host}}/api/events/{{eventId}}
+GET {{host}}{{apiversion}}/events/{{eventId}}
 
 ### Fetch all events with pagination
-GET {{host}}/api/events?page=1&limit=10
+GET {{host}}{{apiversion}}/events?page=1&limit=10
 
 ### Update event by ID (partial update - only date)
-PUT {{host}}/api/events/{{eventId}}
+PUT {{host}}{{apiversion}}/events/{{eventId}}
 Content-Type: application/json
 
 {
@@ -41,7 +38,7 @@ Content-Type: application/json
 }
 
 ### Update event by ID (partial update - only price)
-PUT {{host}}/api/events/{{eventId}}
+PUT {{host}}{{apiversion}}/events/{{eventId}}
 Content-Type: application/json
 
 {
@@ -49,4 +46,4 @@ Content-Type: application/json
 }
 
 ### Delete event by ID
-DELETE {{host}}/api/events/{{eventId}}
+DELETE {{host}}{{apiversion}}/events/{{eventId}}
