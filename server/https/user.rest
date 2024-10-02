@@ -1,0 +1,31 @@
+@host = http://localhost:3003
+@userId = 66e4736af452f73c4fdb0196
+
+### Create a new user
+POST {{host}}/api/users 
+Content-Type: application/json
+
+{
+  "name": "Alice Johnson",
+  "email": "alice.johnson@example.com",
+  "password": "Password123!",
+  "role": "organizer"
+}
+
+### Get all users (with pagination)
+GET {{host}}/api/users?page=1&limit=10
+
+### Get a user by ID
+GET {{host}}/api/users/{{userId}}
+
+### Update a user by ID
+PUT {{host}}/api/users/{{userId}}
+Content-Type: application/json
+
+{
+  "name": "Michael Smith Updated",
+  "email": "michael.smith@example.com"
+}
+
+### Delete a user by ID
+DELETE {{host}}/api/users/{{userId}}
