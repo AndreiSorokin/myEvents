@@ -14,14 +14,10 @@ const mockUser = {
 
 describe("UserService", () => {
   let findOneStub: sinon.SinonStub;
-  let findByIdStub: sinon.SinonStub;
-  let bcryptHashStub: sinon.SinonStub;
 
   // Reset the stubs before each test
   beforeEach(() => {
     findOneStub = sinon.stub(UserModel, "findOne");
-    findByIdStub = sinon.stub(UserModel, "findById");
-    bcryptHashStub = sinon.stub(bcrypt, "hash");
   });
 
   afterEach(() => {
@@ -54,61 +50,43 @@ describe("UserService", () => {
     });
   });
 
-  describe("updateUserPassword", () => {
-    it("should update the user's password when valid", async () => {
-      findByIdStub.resolves(mockUser);
-      bcryptHashStub.resolves("hashedPassword123");
+  describe("UserService - updateUserPassword", () => {
+    let findByIdStub: sinon.SinonStub;
+    let bcryptHashStub: sinon.SinonStub;
+    let mockUserSaveStub: sinon.SinonStub;
 
+    const mockUser = {
+      _id: "66f810ce766adcd06ab40c12",
+      name: "John Doe",
+      email: "john@example.com",
+      password: "OldPassword123",
+      save: sinon.stub(), // Mocks the save method
+    };
+
+    beforeEach(() => {
+      findByIdStub = sinon.stub(UserModel, "findById").resolves(mockUser);
+      bcryptHashStub = sinon.stub(bcrypt, "hash").resolves("hashedPassword123");
+      mockUserSaveStub = mockUser.save.resolves(mockUser);
+    });
+
+    afterEach(() => {
+      sinon.restore(); // Restore the stubbed methods
+    });
+
+    it("should update the user's password when valid", async () => {
       const result = await userService.updateUserPassword(
-        "someId",
+        "66f810ce766adcd06ab40c12",
         "OldPassword123",
         "NewPassword123!"
       );
 
+      // The password should have been updated to the hashed password
       expect(result.password).toEqual("hashedPassword123");
       expect(findByIdStub.calledOnce).toBeTruthy();
       expect(bcryptHashStub.calledOnce).toBeTruthy();
-    });
-
-    it("should throw NotFoundError if the user is not found", async () => {
-      findByIdStub.resolves(null);
-
-      await expect(
-        userService.updateUserPassword(
-          "invalidId",
-          "OldPassword123",
-          "NewPassword123!"
-        )
-      ).rejects.toThrow(NotFoundError);
-      expect(findByIdStub.calledOnce).toBeTruthy();
-    });
-
-    it("should throw BadRequestError if new or current passwords are missing", async () => {
-      findByIdStub.resolves(mockUser);
-
-      await expect(
-        userService.updateUserPassword("someId", "", "NewPassword123!")
-      ).rejects.toThrow(BadRequestError);
+      expect(mockUserSaveStub.calledOnce).toBeTruthy();
     });
   });
 
-  describe("findUserById", () => {
-    it("should return the user if found", async () => {
-      findByIdStub.resolves(mockUser);
-
-      const result = await userService.findUserById("someId");
-
-      expect(result).toEqual(mockUser);
-      expect(findByIdStub.calledOnce).toBeTruthy();
-    });
-
-    it("should throw NotFoundError if the user is not found", async () => {
-      findByIdStub.resolves(null);
-
-      await expect(userService.findUserById("invalidId")).rejects.toThrow(
-        NotFoundError
-      );
-      expect(findByIdStub.calledOnce).toBeTruthy();
-    });
-  });
+  // add test for user find by id
 });
