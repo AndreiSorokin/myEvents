@@ -21,14 +21,12 @@ export const createEvent = async (
     event_link,
     event_type,
     attendees,
-    images
+    images,
   } = eventData;
-
-  console.log(eventData)
 
   // Check if the organizer exists
   const isOrganizerExists = await UserModel.findById(organizer);
-  if(!isOrganizerExists) {
+  if (!isOrganizerExists) {
     throw new BadRequestError("Organizer not found");
   }
   // Check if an event with the same name already exists
@@ -38,8 +36,18 @@ export const createEvent = async (
   }
 
   //Check if all required fields are provided
-  if(!name || !description || !location || !organizer || !date || !price ||!event_type) {
-    throw new BadRequestError("Ensure you have added all necessary information")
+  if (
+    !name ||
+    !description ||
+    !location ||
+    !organizer ||
+    !date ||
+    !price ||
+    !event_type
+  ) {
+    throw new BadRequestError(
+      "Ensure you have added all necessary information"
+    );
   }
 
   try {
@@ -54,7 +62,7 @@ export const createEvent = async (
       event_link,
       event_type,
       attendees,
-      images
+      images,
     });
 
     // Save the new event to the database
