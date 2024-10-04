@@ -1,69 +1,26 @@
 @host = http://localhost:3003
-@apiversion = /api/v1
-@userId = 66ead78b49bac489378931f2
-@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZWFkNzhiNDliYWM0ODkzNzg5MzFmMiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI2NjY2NzI5LCJleHAiOjE3MjY2NzAzMjl9.PenkaNU19e2Xbdgzlr3JoteHDym4puaDsQRFTvFrHls
-@refreshToken = your_refresh_token_here
-@userEmail = john@example.com
+@userId = 66e4736af452f73c4fdb0196
 
 ### Create a new user
-POST {{host}}{{apiversion}}/users 
+POST {{host}}/api/users 
 Content-Type: application/json
 
 {
-  "name": "Admin",
-  "email": "admin@example.com",
+  "name": "Alice Johnson",
+  "email": "alice.johnson@example.com",
   "password": "Password123!",
-  "role": "admin"
-}
-
-### Login 
-POST {{host}}{{apiversion}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "NewPassword123!"
-}
-
-### Refresh Token
-POST {{host}}{{apiversion}}/auth/refresh-token
-Content-Type: application/json
-
-{
-  "token": "{{refreshToken}}"
-}
-
-### Reset Password
-POST {{host}}{{apiversion}}/auth/reset-password
-Content-Type: application/json
-
-{
-  "email": "{{userEmail}}",
-  "newPassword": "NewPassword123!"
-}
-
-### Update user password by ID
-PUT {{host}}{{apiversion}}/users/{{userId}}/update-password
-Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
-
-{
-    "currentPassword": "Password123!",
-    "newPassword": "Password1234!"
+  "role": "organizer"
 }
 
 ### Get all users (with pagination)
-GET {{host}}{{apiversion}}/users?page=1&limit=10
-Authorization: Bearer {{jwtToken}}
+GET {{host}}/api/users?page=1&limit=10
 
 ### Get a user by ID
-GET {{host}}{{apiversion}}/users/{{userId}}
-Authorization: Bearer {{jwtToken}}
+GET {{host}}/api/users/{{userId}}
 
 ### Update a user by ID
-PUT {{host}}{{apiversion}}/users/{{userId}}
+PUT {{host}}/api/users/{{userId}}
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
 
 {
   "name": "Michael Smith Updated",
@@ -71,5 +28,4 @@ Authorization: Bearer {{jwtToken}}
 }
 
 ### Delete a user by ID
-DELETE {{host}}{{apiversion}}/users/{{userId}}
-Authorization: Bearer {{jwtToken}}
+DELETE {{host}}/api/users/{{userId}}

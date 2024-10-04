@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import {
   createLocation,
   getLocationById,
@@ -13,6 +12,10 @@ import multer from "multer";
 
 const router = Router();
 const upload = multer();
+
+
+router.post("/locations", upload.none(), createLocation);
+router.get("/locations/:id", getLocationById);
 
 router.post("/", upload.none(), createLocation);
 router.get("/", getAllLocations);
