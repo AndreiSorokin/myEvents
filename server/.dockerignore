@@ -1,0 +1,23 @@
+# Ignore logs, npm debug files
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Ignore test coverage files
+coverage
+
+# Ignore environment variables
+.env
+
+# Ignore node_modules and dist directories
+node_modules
+dist
+
+# Ignore IDE-related files
+.vscode/
+.idea/
+
+# Ignore docs, images, etc.
+erd
+https

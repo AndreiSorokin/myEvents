@@ -37,6 +37,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "start": "ts-node src/server.ts"
+    "start": "ts-node src/server.ts",
+    "build": "tsc"
   }
 }

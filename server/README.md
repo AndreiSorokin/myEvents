@@ -16,6 +16,7 @@ This repository contains the server for the event application contributed by And
 - [Database Schema and ERD](#database-schema-and-erd)
 - [Folder structure](#folder-structure)
 - [API Endpoints](#api-endpoints)
+- [Containerization](#containerization)
 
 ## Getting Started
 
@@ -154,3 +155,61 @@ This project is organized into various folders and files for better modularity a
 - Delete the location by id -> `DELETE http://localhost:3003/v1/locations/[location_id]` (Have not set the auth rule - Must be the same location's creator).
 
 ### 4. Allow User
+
+## Containerization
+
+### 1. Navigate to server folder
+
+```
+cd .\server\
+```
+
+2. Set up your local environment by creating a file `.env` with these values, replace them with your own API info:
+
+```
+PORT=3003
+MONGO_DB_URL=[YOUR_DB_CONNECTION_STRING]
+JWT_SECRET=D0hf7Dv1XOOk2I9ElcG6ItellMzeNAQN
+JWT_EXPIRATION=1h
+CLOUDINARY_CLOUD_NAME=[YOUR_CLOUDINARY_NAME]
+CLOUDINARY_API_KEY=[YOUR_CLOUDINARY_API_KEY]
+CLOUDINARY_API_SECRET=[YOUR_CLOUDINARY_API_SECRET]
+```
+
+### 2. **Build the Docker Image:** Ensure Docker is installed and running on your machine. Then run the following command to build the image:
+
+```
+docker build -t my-events-backend-app .
+```
+
+### 3. Run the container:
+
+```
+docker run -p 3003:3003 --env-file .env --init my-events-backend-app
+```
+
+### 4. **Access the App:** Open your browser and navigate to http://localhost:3003. The backend should be up and running.
+
+### 5. Clean your docker engine
+
+### 6. Publish docker image to Docker Hub:
+
+#### 6.1 - Tag your local Docker image:
+
+```
+docker tag my-events-backend-app:latest your-username/my-events-backend-app:1.0.0
+```
+
+#### 6.2 - Log in to Docker Hub: (If you don't already have Docker account, please sign yourself up first in Docker Hub platform)
+
+```
+docker login
+```
+
+#### 6.3. Push the Docker Image to Docker Hub
+
+```
+docker push your-username/my-events-backend-app:1.0.0
+```
+
+#### 6.4. [Publish URL](https://hub.docker.com/repository/docker/tripplen63/my-events-backend-app/general)
