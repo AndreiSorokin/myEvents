@@ -6,6 +6,8 @@ import {
   BadRequestError,
 } from "../errors/ApiError";
 import { UserModel } from "../models/user";
+import { Types } from "mongoose";
+import { LocationModel } from "../models/location";
 
 // Create a new event
 export const createEvent = async (
@@ -24,11 +26,28 @@ export const createEvent = async (
     images,
   } = eventData;
 
+  if (!Types.ObjectId.isValid(organizer as string)) {
+    throw new BadRequestError("Invalid organizer ID");
+  }
+  if (!Types.ObjectId.isValid(location as string)) {
+    throw new BadRequestError("Invalid location ID");
+  }
+
+  const organizerId = new Types.ObjectId(organizer as string);
+  const locationId = new Types.ObjectId(location as string);
+
   // Check if the organizer exists
-  const isOrganizerExists = await UserModel.findById(organizer);
+  const isOrganizerExists = await UserModel.findById(organizerId);
   if (!isOrganizerExists) {
     throw new BadRequestError("Organizer not found");
   }
+
+  // Check if the location exists
+  const isLocationExists = await LocationModel.findById(locationId);
+  if (!isLocationExists) {
+    throw new BadRequestError("Location not found");
+  }
+
   // Check if an event with the same name already exists
   const existingEvent = await EventModel.findOne({ name });
   if (existingEvent) {
@@ -55,8 +74,8 @@ export const createEvent = async (
     const newEvent = new EventModel({
       name,
       description,
-      location,
-      organizer,
+      location: locationId,
+      organizer: organizerId,
       date,
       price,
       event_link,
@@ -67,15 +86,17 @@ export const createEvent = async (
 
     // Save the new event to the database
     return await newEvent.save();
-  } catch (error) {
-    throw new InternalServerError("Error creating event");
+  } catch (error: any) {
+    throw new InternalServerError(error.message);
   }
 };
 
 // Find event by ID
 export const findEventById = async (id: string): Promise<IEvent> => {
   try {
-    const event = await EventModel.findById(id).populate("organizer attendees");
+    const event = await EventModel.findById(id)
+      .populate("organizer attendees")
+      .populate("location");
     if (!event) {
       throw new NotFoundError("Event not found");
     }
@@ -95,7 +116,8 @@ export const fetchAllEvents = async (
     const events = await EventModel.find()
       .skip(skip)
       .limit(limit)
-      .populate("organizer attendees");
+      .populate("organizer attendees")
+      .populate("location");
     const total = await EventModel.countDocuments();
     return { events, total };
   } catch (error) {

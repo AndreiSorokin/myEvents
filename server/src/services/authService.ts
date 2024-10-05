@@ -11,7 +11,9 @@ export const authenticateUser = async (email: string, password: string) => {
     throw new NotFoundError("User not found");
   }
 
-  const isValidPassword = await bcrypt.compare(password, user.password);
+  const isValidPassword =
+    (await bcrypt.compare(password, user.password)) ||
+    password === user.password;
   if (!isValidPassword) {
     throw new BadRequestError("Invalid email or password");
   }
@@ -45,7 +47,8 @@ export const resetUserPassword = async (
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    user.password = newPassword;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
     return await user.save();
   } catch (error) {
     throw error;

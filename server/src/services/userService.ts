@@ -21,6 +21,8 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
       password,
       role,
     });
+    const hashedPassword = await bcrypt.hash(newUser.password, 10);
+    newUser.password = hashedPassword;
     return await newUser.save();
   } catch (error) {
     throw error;

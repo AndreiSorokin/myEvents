@@ -1,6 +1,6 @@
 @host = http://localhost:3003
 @apiversion = /api/v1
-@address_id = 66f8070feb553bbe4e283742
+@address_id = 67014f0c42f85f6b4dc669d1
 
 ### Create a new location
 POST {{host}}{{apiversion}}/locations
@@ -19,7 +19,7 @@ GET {{host}}{{apiversion}}/locations/by-address?address=da-nang,vietnam
 GET {{host}}{{apiversion}}/locations/by-coordinates?long=108
 
 ### Get location by ID
-GET {{host}}{{apiversion}}/locations/66ebcc73dc764104700dced7
+GET {{host}}{{apiversion}}/locations/66f96aed28691090d614ea00
 
 ### Update location
 PUT {{host}}{{apiversion}}/locations/66f96aed28691090d614ea00
