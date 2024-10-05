@@ -48,6 +48,29 @@ export const getLocationsByAddressInfo = async (
   }
 };
 
+// TODO: Get location by coordinates
+export const getLocationByCoordinates = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const latitude = req.query.lat
+      ? parseFloat(req.query.lat as string)
+      : undefined;
+    const longitude = req.query.long
+      ? parseFloat(req.query.long as string)
+      : undefined;
+    const locations = await locationService.getLocationByCoordinates(
+      latitude,
+      longitude
+    );
+    res.status(200).json(locations);
+  } catch (error: any) {
+    next(new InternalServerError(error.message));
+  }
+};
+
 // TODO: Get a location by ID
 export const getLocationById = async (
   req: Request,

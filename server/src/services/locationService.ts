@@ -73,6 +73,43 @@ const getLocationsByAddressInfo = async (
   return filteredLocations;
 };
 
+// TODO: Get Location by coordinates
+const getLocationByCoordinates = async (
+  latitude?: number,
+  longitude?: number
+): Promise<ILocation[]> => {
+  if (!latitude && !longitude) {
+    throw new BadRequestError("Latitude or longitude is required");
+  }
+
+  // Define the tolerance value for the search (you can adjust this as needed)
+  const tolerance = 0.5;
+
+  // Build query conditions based on provided lattitude and longtitude
+  const searchConditions: any = {};
+
+  if (latitude) {
+    searchConditions.latitude = {
+      $gte: latitude - tolerance, // greater than or equal to.
+      $lte: latitude + tolerance, // less than or equal to.
+    };
+  }
+
+  if (longitude) {
+    searchConditions.longitude = {
+      $gte: longitude - tolerance,
+      $lte: longitude + tolerance,
+    };
+  }
+
+  // Fetch matching locations
+  const locations = await LocationModel.find(searchConditions).populate({
+    path: "address",
+  });
+
+  return locations;
+};
+
 const getLocationById = async (id: string): Promise<ILocation> => {
   if (!id) {
     throw new BadRequestError("Location ID is required");
@@ -144,6 +181,7 @@ export default {
   getLocationById,
   getAllLocations,
   getLocationsByAddressInfo,
+  getLocationByCoordinates,
   updateLocation,
   deleteLocation,
 };

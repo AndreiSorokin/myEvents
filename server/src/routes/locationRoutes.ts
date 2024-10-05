@@ -4,6 +4,7 @@ import {
   getLocationById,
   getAllLocations,
   getLocationsByAddressInfo,
+  getLocationByCoordinates,
   updateLocation,
   deleteLocation,
 } from "../controllers/locationController";
@@ -20,6 +21,7 @@ router.get("/locations/:id", getLocationById);
 router.post("/", upload.none(), createLocation);
 router.get("/", getAllLocations);
 router.get("/by-address", getLocationsByAddressInfo);
+router.get("/by-coordinates", getLocationByCoordinates);
 router.get("/:id", getLocationById);
 router.put("/:id", updateLocation);
 router.delete("/:id", deleteLocation);
