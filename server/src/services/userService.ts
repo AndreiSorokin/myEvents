@@ -41,7 +41,12 @@ export const updateUserPassword = async (
     }
 
     // Check if the new password is provided and not empty
-    if (!newPassword || newPassword.trim() === "" || !currentPassword || currentPassword.trim() === "") {
+    if (
+      !newPassword ||
+      newPassword.trim() === "" ||
+      !currentPassword ||
+      currentPassword.trim() === ""
+    ) {
       throw new BadRequestError("Please provide current and new passwords");
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);

@@ -1,5 +1,9 @@
 @host = http://localhost:3003
-@userId = 66e4736af452f73c4fdb0196
+@apiversion = /api/v1
+@userId = 66ead78b49bac489378931f2
+@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTQ3MzZhZjQ1MmY3M2M0ZmRiMDE5NiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI3ODg0NjcxLCJleHAiOjE3Mjc4ODgyNzF9.OHskTcCkDC1UVYxfgrOIYoq-MQ4a2KwzJYekRntvfzM
+@refreshToken = your_refresh_token_here
+@userEmail = john@example.com
 
 ### Create a new user
 POST {{host}}/api/users 
