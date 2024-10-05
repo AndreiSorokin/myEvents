@@ -4,22 +4,17 @@
 
 ### Create a new event
 POST {{host}}{{apiversion}}/events
-form-data
+Content-Type: application/json
 
 {
-  "name": "Tech Conference 2024",
-  "description": "A leading technology conference.",
-  location[latitude]: 60.1699,
-  location[longitude]: 24.9384,
-  location[address][country]: Finland,
-  location[address][city]: Helsinki,
-  location[address][district]: Kallio,
-  location[address][post_code]: 00530,
-  "organizer": "66e4739bf452f73c4fdb019d",
+  "name": "Music Fest 2024",
+  "description": "A Music concert",
+  "location": "67014f3b42f85f6b4dc669d8",
+  "organizer": "67013529a2556b0192e1acfb",
   "date": "2024-09-20T18:30:00.000Z",
   "price": 250,
   "event_link": "https://techconf2024.com",
-  "event_type": "conference",
+  "event_type": "concert",
   "attendees": []
 }
 

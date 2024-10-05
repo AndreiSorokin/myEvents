@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import passport from "passport";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorMiddleware";
 import addressRoutes from "./routes/addressRoutes";

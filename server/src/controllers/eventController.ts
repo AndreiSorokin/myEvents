@@ -10,15 +10,18 @@ export const createEvent = async (
 ): Promise<void> => {
   try {
     let imageUrls = [];
-        if (req.files) {
-            const files = req.files as Express.Multer.File[];
-            for (const file of files) {
-                const imageUrl = await uploadImageToCloudinary(file.buffer, file.originalname);
-                imageUrls.push(imageUrl);
-            }
-        } else {
-            imageUrls = req.body.images || [];
-        }
+    if (req.files) {
+      const files = req.files as Express.Multer.File[];
+      for (const file of files) {
+        const imageUrl = await uploadImageToCloudinary(
+          file.buffer,
+          file.originalname
+        );
+        imageUrls.push(imageUrl);
+      }
+    } else {
+      imageUrls = req.body.images || [];
+    }
     const newEvent = await eventService.createEvent(req.body);
     res.status(201).json(newEvent);
   } catch (error) {

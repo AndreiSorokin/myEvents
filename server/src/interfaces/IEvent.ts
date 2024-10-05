@@ -7,7 +7,7 @@ import { EventType } from "../enums/EventType";
 export interface IEvent extends Document {
   name: string;
   description: string;
-  location: ILocation;
+  location: ILocation["_id"];
   organizer: IUser["_id"]; // Reference to the User ID (organizer)
   date: Date;
   price: number;
