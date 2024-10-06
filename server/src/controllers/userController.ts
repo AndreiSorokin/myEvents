@@ -12,7 +12,17 @@ export const createUser = async (
 ): Promise<void> => {
   try {
     const newUser = await userService.createUser(req.body);
-    res.status(201).json(newUser);
+
+    // redirect -> form submission
+    // return JSON -> application/json
+    if (req.headers["content-type"] === "application/json") {
+      res.status(201).json({
+        message: "User created successfully",
+        user: newUser,
+      });
+    } else {
+      res.status(201).redirect("/login");
+    }
   } catch (error) {
     next(error);
   }
@@ -27,17 +37,9 @@ export const updateUserPassword = async (
   try {
     const { currentPassword, newPassword } = req.body;
 
-    if (!currentPassword ||!newPassword) {
-      throw new BadRequestError("Please provide current and new passwords")
-    }
-
-    const userData = await userService.findUserById(req.params.id);
-    const hashedPassword = userData.password;
-
-    const isPasswordCorrect = await bcrypt.compare(currentPassword, hashedPassword);
-
-    if (!isPasswordCorrect) {
-      throw new BadRequestError("Incorrect password");
+    // Ensure both current and new passwords are provided
+    if (!currentPassword || !newPassword) {
+      throw new BadRequestError("Please provide current and new passwords");
     }
 
     const updatedUser = await userService.updateUserPassword(
@@ -45,9 +47,12 @@ export const updateUserPassword = async (
       currentPassword,
       newPassword
     );
-    res
-      .status(200)
-      .json({ message: "Password updated successfully", user: updatedUser });
+
+    // Send success response
+    res.status(200).json({
+      message: "Password updated successfully",
+      user: updatedUser,
+    });
   } catch (error) {
     next(error);
   }
