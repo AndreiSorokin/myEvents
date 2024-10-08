@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { LocationModel } from "../models/location";
 import locationService from "../services/locationService";
-import { InternalServerError } from "../errors/ApiError";
+import { InternalServerError, NotFoundError } from "../errors/ApiError";
 
 // TODO: Create a location
 export const createLocation = async (
@@ -10,8 +10,17 @@ export const createLocation = async (
   next: NextFunction
 ) => {
   try {
-    const { address } = req.body;
-    const location = new LocationModel({ address });
+    const { country, city, district, ward, post_code, street, address_number } =
+      req.body;
+    const location = new LocationModel({
+      country,
+      city,
+      district,
+      ward,
+      post_code,
+      street,
+      address_number,
+    });
     const newLocation = await locationService.createLocation(location);
     res.status(201).json(newLocation);
   } catch (error: any) {
@@ -94,10 +103,20 @@ export const updateLocation = async (
 ) => {
   try {
     const locationId = req.params.id;
-    const { address } = req.body;
-    const updatedLocation = await locationService.updateLocation(locationId, {
-      address,
-    });
+    if (!locationId) {
+      throw new InternalServerError("Location ID is required.");
+    }
+
+    // If location id is not in database:
+    const existedLocation = await locationService.getLocationById(locationId);
+    if (!existedLocation) {
+      throw new NotFoundError(`Location with ID ${locationId} not found.`);
+    }
+
+    const updatedLocation = await locationService.updateLocation(
+      locationId,
+      req.body
+    );
     res
       .status(200)
       .json({ message: "Location updated successfully.", updatedLocation });

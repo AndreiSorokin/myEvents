@@ -1,26 +1,26 @@
 import axios from "axios";
-import { IAddress } from "../interfaces/IAddress";
+import { ILocation } from "../interfaces/ILocation";
 require("dotenv").config();
 
 const OPENCAGE_API_KEY = process.env.OPENCAGE_API_KEY;
 const BASE_URL = `https://api.opencagedata.com/geocode/v1/json?key=${OPENCAGE_API_KEY}`;
 
-export const fetchCoordinates = async (address: IAddress) => {
+export const fetchCoordinates = async (location: Partial<ILocation>) => {
   try {
     const { country, city, district, post_code, street, address_number, ward } =
-      address;
+      location;
 
     // Construct the address string
     const addressString = `
-    ${address_number || ""},
-    ${street || ""},
-    ${ward || ""},
-    ${district || ""},
-    ${city},
-    ${post_code},
-    ${country}`;
+      ${address_number || ""},
+      ${street || ""},
+      ${ward || ""},
+      ${district || ""},
+      ${city},
+      ${post_code || ""},
+      ${country}`;
 
-    // TODO: OpenCage API Call
+    // OpenCage API call
     const response = await axios.get(`${BASE_URL}`, {
       params: {
         q: addressString,
