@@ -4,32 +4,57 @@ import {
   InternalServerError,
 } from "../errors/ApiError";
 import { ILocation } from "../interfaces/ILocation";
-import { AddressModel } from "../models/address";
 import { LocationModel } from "../models/location";
-import mongoose from "mongoose";
+import { isValidObjectId } from "mongoose";
+import {
+  validateCity,
+  validateCountry,
+  validateDistrict,
+  validatePostcode,
+  validateWard,
+} from "../utils/locationValidation";
 
 const createLocation = async (locationData: ILocation): Promise<ILocation> => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(locationData.address as string)) {
-      throw new BadRequestError("Invalid Address ID format.");
+    const { country, city, post_code, district, ward } = locationData;
+
+    if (!country || !(await validateCountry(country))) {
+      throw new InternalServerError(" - Invalid or missing COUNTRY.");
     }
 
-    const addressExists = await AddressModel.findById(locationData.address);
-    if (!addressExists) {
-      throw new NotFoundError(
-        `Address with id ${locationData.address} not found.`
+    if (!city || !(await validateCity(country, city))) {
+      throw new InternalServerError(
+        " - Invalid or missing CITY for the given country."
+      );
+    }
+
+    if (post_code && !(await validatePostcode(country, city, post_code))) {
+      throw new InternalServerError(
+        " - Invalid POSTCODE for the given country and city."
+      );
+    }
+
+    if (district && !(await validateDistrict(country, city, district))) {
+      throw new InternalServerError(
+        " - Invalid DISTRICT for the given country and city."
+      );
+    }
+
+    if (ward && !(await validateWard(country, city, district, ward))) {
+      throw new InternalServerError(
+        " - Invalid WARD for the given country, city, and district."
       );
     }
 
     const newLocation = await LocationModel.create(locationData);
-    return newLocation.populate("address");
+    return newLocation;
   } catch (error: any) {
     throw new InternalServerError("Internal Server Error" + error.message);
   }
 };
 
 const getAllLocations = async (): Promise<ILocation[]> => {
-  return await LocationModel.find().populate("address");
+  return await LocationModel.find();
 };
 
 // TODO: Get Location by random address's information (i.e. country, city, postal code, district, etc)
@@ -56,21 +81,24 @@ const getLocationsByAddressInfo = async (
     ],
   }));
 
-  // Search based on different address fields using the constructed regex
-  const locations = await LocationModel.find({
-    address: { $ne: null },
-  }).populate({
-    path: "address",
-    match: {
-      $and: searchConditions, // Ensure all address parts match one of the fields
-    },
-  });
+  try {
+    // Search for locations directly within the LocationModel using the constructed regex
+    const locations = await LocationModel.find({
+      $and: searchConditions, // Ensure all parts match at least one of the fields
+    });
 
-  const filteredLocations = locations.filter(
-    (location) => location.address !== null
-  );
+    if (!locations.length) {
+      throw new NotFoundError(
+        "No locations found matching the given address information."
+      );
+    }
 
-  return filteredLocations;
+    return locations;
+  } catch (error: any) {
+    throw new InternalServerError(
+      "Error retrieving locations: " + error.message
+    );
+  }
 };
 
 // TODO: Get Location by coordinates
@@ -103,9 +131,7 @@ const getLocationByCoordinates = async (
   }
 
   // Fetch matching locations
-  const locations = await LocationModel.find(searchConditions).populate({
-    path: "address",
-  });
+  const locations = await LocationModel.find(searchConditions);
 
   return locations;
 };
@@ -115,7 +141,11 @@ const getLocationById = async (id: string): Promise<ILocation> => {
     throw new BadRequestError("Location ID is required");
   }
 
-  const foundLocation = await LocationModel.findById(id).populate("address");
+  if (!isValidObjectId(id)) {
+    throw new BadRequestError("Invalid Location ID format");
+  }
+
+  const foundLocation = await LocationModel.findById(id);
 
   if (!foundLocation) {
     throw new NotFoundError(`Location with id ${id} cannot be found`);
@@ -132,17 +162,51 @@ const updateLocation = async (
     throw new BadRequestError("Location ID is required");
   }
 
-  if (
-    locationData.address &&
-    !mongoose.Types.ObjectId.isValid(locationData.address as string)
-  ) {
-    throw new BadRequestError("Invalid Address ID format.");
+  if (!isValidObjectId(id)) {
+    throw new BadRequestError("Invalid Location ID format");
   }
 
-  const addressExists = await AddressModel.findById(locationData.address);
-  if (!addressExists) {
-    throw new NotFoundError(
-      `Address with ID ${locationData.address} not found.`
+  const { country, city, post_code, district, ward } = locationData;
+
+  if (country && !(await validateCountry(country))) {
+    throw new InternalServerError("Invalid COUNTRY.");
+  }
+
+  if (country && city && !(await validateCity(country, city))) {
+    throw new InternalServerError("Invalid CITY for the given country.");
+  }
+
+  if (
+    country &&
+    city &&
+    post_code &&
+    !(await validatePostcode(country, city, post_code))
+  ) {
+    throw new InternalServerError(
+      "Invalid POSTCODE for the given country and city."
+    );
+  }
+
+  if (
+    country &&
+    city &&
+    district &&
+    !(await validateDistrict(country, city, district))
+  ) {
+    throw new InternalServerError(
+      "Invalid DISTRICT for the given country and city."
+    );
+  }
+
+  if (
+    country &&
+    city &&
+    district &&
+    ward &&
+    !(await validateWard(country, city, district, ward))
+  ) {
+    throw new InternalServerError(
+      "Invalid WARD for the given country, city, and district."
     );
   }
 
@@ -151,7 +215,7 @@ const updateLocation = async (
     id,
     locationData,
     { new: true }
-  ).populate("address");
+  );
 
   if (!updatedLocation) {
     throw new NotFoundError(`Location with ID ${id} not found`);
@@ -165,9 +229,7 @@ const deleteLocation = async (id: string): Promise<ILocation | null> => {
     throw new BadRequestError("Location ID is required");
   }
 
-  const deletedLocation = await LocationModel.findByIdAndDelete(id).populate(
-    "address"
-  );
+  const deletedLocation = await LocationModel.findByIdAndDelete(id);
 
   if (!deletedLocation) {
     throw new NotFoundError(`Location with ID ${id} not found`);

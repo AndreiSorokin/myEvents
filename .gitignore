@@ -1,7 +1,0 @@
-dist
-node_modules
-.env
-yarn.lock
-coverage
-yarn-error.log
-package-lock.json
