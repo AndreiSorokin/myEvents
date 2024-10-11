@@ -1,19 +1,18 @@
-import {
-  Route,
-  Routes
-} from 'react-router-dom'
-import Navbar from './components/Navbar'
+import { Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Login from "./components/Login";
 
 function App() {
-
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <Routes>
-        <Route></Route>
+        <Route>
+          <Route path="/login" element={<Login />} />
+        </Route>
       </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
