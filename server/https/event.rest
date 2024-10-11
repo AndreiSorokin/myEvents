@@ -1,5 +1,5 @@
 @host = http://localhost:3003
-@eventId = 66e47b5bc7fd3303b57c8f0b
+@eventId = 670944df4e03dec5897a6cbf
 @apiversion = /api/v1
 
 ### Create a new event
@@ -7,15 +7,31 @@ POST {{host}}{{apiversion}}/events
 Content-Type: application/json
 
 {
-  "name": "Music Fest 2024",
-  "description": "A Music concert",
-  "location": "67014f3b42f85f6b4dc669d8",
+  "name": "Business Growth Seminar",
+  "description": "A seminar on strategies for growing your business.",
+  "location": "670535642a5a13d07b8b412f",
   "organizer": "67013529a2556b0192e1acfb",
-  "date": "2024-09-20T18:30:00.000Z",
-  "price": 250,
-  "event_link": "https://techconf2024.com",
-  "event_type": "concert",
+  "date": "2025-12-01T14:00:00.000Z",
+  "price": 350,
+  "event_link": "https://businessgrowthseminar2025.com",
+  "event_type": "seminar",
   "attendees": []
+}
+
+### Chat to find Events with AI
+POST {{host}}{{apiversion}}/events/ai
+Content-Type: application/json
+
+{
+  "message": "I am a tech enthusiast, can you recommend me some tech event under 1000 euro?"
+}
+
+### Continue the chat
+POST {{host}}{{apiversion}}/events/ai/1728663719609
+Content-Type: application/json
+
+{
+  "message": "I am looking for a tech event in Finland."
 }
 
 ### Get event by ID

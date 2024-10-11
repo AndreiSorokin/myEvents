@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { IEvent } from "../interfaces/IEvent";
 import { EventType } from "../enums/EventType";
 
-const eventSchema = new Schema<IEvent>({
+export const eventSchema = new Schema<IEvent>({
   name: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   location: { type: Schema.Types.ObjectId, ref: "Location", required: true },
@@ -17,6 +17,8 @@ const eventSchema = new Schema<IEvent>({
   },
   attendees: [{ type: Schema.Types.ObjectId, ref: "User" }], // Array of User IDs (many-to-many)
   images: { type: [String] },
+  summary: { type: String }, // Store event summary
+  summary_embedding: { type: [Number] }, // Store embedding
 });
 
 // JSON serialization for eventSchema

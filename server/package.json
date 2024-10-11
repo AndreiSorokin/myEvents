@@ -1,7 +1,13 @@
 {
   "dependencies": {
-    "@huggingface/hub": "^0.18.1",
-    "@huggingface/inference": "^2.8.1",
+    "@google/generative-ai": "^0.21.0",
+    "@langchain/community": "^0.3.4",
+    "@langchain/core": "^0.3.9",
+    "@langchain/google-genai": "^0.1.0",
+    "@langchain/groq": "^0.1.2",
+    "@langchain/langgraph": "^0.2.14",
+    "@langchain/langgraph-checkpoint-mongodb": "^0.0.3",
+    "@langchain/mongodb": "^0.1.0",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.0",
@@ -16,7 +22,6 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.4",
     "passport": "^0.7.0",
-    "transformers": "^3.1.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

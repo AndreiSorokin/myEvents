@@ -8,8 +8,16 @@ import {
 import { UserModel } from "../models/user";
 import { Types } from "mongoose";
 import { LocationModel } from "../models/location";
+import { summarizeEvent } from "../langchain/summarizeService";
 
-// Create a new event
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+
+const llm = new GoogleGenerativeAIEmbeddings({
+  model: "text-embedding-004",
+  apiKey: process.env.GOOGLE_API_KEY as string,
+});
+
+// TODO: Create a new event
 export const createEvent = async (
   eventData: Partial<IEvent>
 ): Promise<IEvent> => {
@@ -70,6 +78,26 @@ export const createEvent = async (
   }
 
   try {
+    // Fetch location and organizer details
+    const locationDetails = await LocationModel.findById(locationId);
+    const organizerDetails = await UserModel.findById(organizerId);
+
+    // Summarize the event information
+    if (!locationDetails) {
+      throw new BadRequestError("Location details not found");
+    }
+    if (!organizerDetails) {
+      throw new BadRequestError("Organizer details not found");
+    }
+    const eventSummary = summarizeEvent(
+      eventData,
+      locationDetails,
+      organizerDetails.name
+    );
+
+    // Embed the event summary using Hugging Face
+    const embeddedSummary = await llm.embedQuery(eventSummary);
+
     // Create the new event
     const newEvent = new EventModel({
       name,
@@ -82,6 +110,8 @@ export const createEvent = async (
       event_type,
       attendees,
       images,
+      summary: eventSummary, // Store the event summary
+      summary_embedding: embeddedSummary, // Store the embedding
     });
 
     // Save the new event to the database
