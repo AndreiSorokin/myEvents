@@ -8,7 +8,10 @@ import {
 import { UserModel } from "../models/user";
 import { Types } from "mongoose";
 import { LocationModel } from "../models/location";
-import { summarizeEvent } from "../langchain/summarizeService";
+import {
+  summarizeEvent,
+  createEventSummary,
+} from "../langchain/summarizeService";
 
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 
@@ -89,10 +92,10 @@ export const createEvent = async (
     if (!organizerDetails) {
       throw new BadRequestError("Organizer details not found");
     }
-    const eventSummary = summarizeEvent(
+    const eventSummary = await createEventSummary(
       eventData,
-      locationDetails,
-      organizerDetails.name
+      locationId.toString(),
+      organizerId.toString()
     );
 
     // Embed the event summary using Hugging Face
