@@ -2,12 +2,17 @@ import { useState } from "react";
 import { useLoginMutation } from "../../api/authSlice";
 import { useNavigate } from "react-router-dom";
 import ResetPasswordModal from "./ResetPasswordModal";
+import { CreateAccountModal } from "../user/CreateAccountModal";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { isLoading, error }] = useLoginMutation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
+    useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -72,7 +77,7 @@ const Login = () => {
                 <button
                   type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setIsResetPasswordModalOpen(true)}
                 >
                   Forgot password?
                 </button>
@@ -108,11 +113,13 @@ const Login = () => {
           )}
         </form>
 
+        {/* Create an account */}
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?{" "}
           <a
             href="#"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            onClick={() => setIsCreateAccountModalOpen(true)}
           >
             Create an account
           </a>
@@ -120,8 +127,14 @@ const Login = () => {
       </div>
       {/* Render ResetPasswordModal */}
       <ResetPasswordModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
+      />
+
+      {/* Create Account Modal */}
+      <CreateAccountModal
+        isOpen={isCreateAccountModalOpen}
+        onClose={() => setIsCreateAccountModalOpen(false)}
       />
     </div>
   );

@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import userService from "../services/userService";
 import { BadRequestError } from "../errors/ApiError";
 
-import bcrypt from "bcrypt";
-
 // Create a new user
 export const createUser = async (
   req: Request,
