@@ -76,7 +76,6 @@ npm run dev
 | Library          | Purpose                                                                                                    |
 | ---------------- | ---------------------------------------------------------------------------------------------------------- |
 | **bcrypt**       | Library for hashing and comparing passwords securely.                                                      |
-| **cloudinary**   | A service to manage images and videos in the cloud, used for uploading and manipulating media files.       |
 | **cors**         | Enables Cross-Origin Resource Sharing (CORS) for handling requests from different origins.                 |
 | **dotenv**       | Loads environment variables from a `.env` file into `process.env`.                                         |
 | **express**      | Fast, unopinionated web framework for building RESTful APIs in Node.js.                                    |
@@ -95,10 +94,10 @@ npm run dev
 
 ## Third party API
 
-| API      | Purpose                                                                      | Info                                  |
-| -------- | ---------------------------------------------------------------------------- | ------------------------------------- |
-| OpenCage | Converts geographic coordinates into human-readable addresses and vice versa | [OpenCage](https://opencagedata.com/) |
-|          |                                                                              |                                       |
+| API        | Purpose                                                                                             | Info                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OpenCage   | Converts geographic coordinates into human-readable addresses and vice versa                        | [OpenCage](https://opencagedata.com/)                                                                                                                                                                                                                                                                                                                                                                      |
+| Cloudinary | A service to manage images and videos in the cloud, used for uploading and manipulating media files | [Cloudinary](https://cloudinary.com/ip/gr-sea-gg-brand-home-base?utm_source=google&utm_medium=search&utm_campaign=goog_selfserve_brand_wk22_replicate_core_branded_keyword&utm_term=1329&campaignid=17601148700&adgroupid=141182782954&keyword=cloudinary&device=c&matchtype=e&adposition=&gad_source=1&gclid=CjwKCAjwuJ2xBhA3EiwAMVjkVDQE2XSn8Gjt2CEGbI9Z7__dfcr8Acu5EILsW-4CfJ5GAnry5J0SdhoCaPQQAvD_BwE) |
 
 ## Database Schema and ERD
 
@@ -137,8 +136,7 @@ This project is organized into various folders and files for better modularity a
 
 ### 1. Allow Annonymous
 
-- Sign In
-- Sign Up
+- Sign Up -> `POST http://localhost:3003/api/v1/users`
 - Get All Events
 
 ### 2. Allow Admin (Included actions that organizer and user can access)
@@ -155,6 +153,8 @@ This project is organized into various folders and files for better modularity a
 - Delete the location by id -> `DELETE http://localhost:3003/v1/locations/[location_id]` (Have not set the auth rule - Must be the same location's creator).
 
 ### 4. Allow User
+
+- Sign in -> ` POST http://localhost:3003/api/v1/auth/login`
 
 ## Containerization
 

@@ -37,18 +37,26 @@ export const authenticateUser = async (email: string, password: string) => {
   };
 };
 
-// Reset user password
+// Generate Password Reset Token (Valid for 1 hour)
+export const generateResetToken = (userId: string): string => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET!, { expiresIn: "1h" });
+};
+
+// Reset user password by user ID
 export const resetUserPassword = async (
-  email: string,
+  id: string,
   newPassword: string
 ): Promise<IUser> => {
   try {
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findById(id);
     if (!user) {
       throw new NotFoundError("User not found");
     }
+
+    // Hash the new password and update it
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
+
     return await user.save();
   } catch (error) {
     throw error;
@@ -72,4 +80,5 @@ export default {
   authenticateUser,
   resetUserPassword,
   validateRefreshToken,
+  generateResetToken,
 };

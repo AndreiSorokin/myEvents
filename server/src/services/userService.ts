@@ -51,6 +51,17 @@ export const updateUserPassword = async (
     ) {
       throw new BadRequestError("Please provide current and new passwords");
     }
+
+    // Verify if the current password matches the user's stored password
+    const isPasswordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isPasswordMatch) {
+      throw new BadRequestError("Current password is incorrect");
+    }
+
+    // Hash the new password and update it
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
     return await user.save();
@@ -66,6 +77,19 @@ export const findUserById = async (id: string): Promise<IUser> => {
       throw new NotFoundError("Invalid User ID");
     }
     const user = await UserModel.findById(id).populate("events");
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Find user by email
+export const findUserByEmail = async (email: string): Promise<IUser | null> => {
+  try {
+    const user = await UserModel.findOne({ email });
     if (!user) {
       throw new NotFoundError("User not found");
     }
@@ -129,6 +153,7 @@ export default {
   createUser,
   updateUserPassword,
   findUserById,
+  findUserByEmail,
   fetchAllUsers,
   updateUser,
   deleteUser,
