@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLoginMutation } from "../../api/authSlice";
 import { useNavigate } from "react-router-dom";
-import ResetPasswordModal from "./ResetPasswordModal";
 import { CreateAccountModal } from "../user/CreateAccountModal";
+import RequestResetPasswordModal from "./ResetPasswordModal";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -126,7 +126,7 @@ const Login = () => {
         </p>
       </div>
       {/* Render ResetPasswordModal */}
-      <ResetPasswordModal
+      <RequestResetPasswordModal
         isOpen={isResetPasswordModalOpen}
         onClose={() => setIsResetPasswordModalOpen(false)}
       />

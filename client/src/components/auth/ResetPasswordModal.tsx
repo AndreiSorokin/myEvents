@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRequestPasswordResetMutation } from "../../api/authSlice";
 
 interface ResetPasswordModalProps {
@@ -6,9 +7,37 @@ interface ResetPasswordModalProps {
   onClose: () => void;
 }
 
-const ResetPasswordModal = ({ isOpen, onClose }: ResetPasswordModalProps) => {
+const RequestResetPasswordModal = ({
+  isOpen,
+  onClose,
+}: ResetPasswordModalProps) => {
   const [email, setEmail] = useState("");
   const [requestPasswordReset] = useRequestPasswordResetMutation();
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  // Close modal on escape key press
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        setEmail("");
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
+
+  // Handle click outside modal content
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        onClose();
+        setEmail("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,9 +52,12 @@ const ResetPasswordModal = ({ isOpen, onClose }: ResetPasswordModalProps) => {
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 p-2">
+      <div
+        ref={modalRef}
+        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
+      >
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           Reset Password
         </h3>
@@ -65,6 +97,8 @@ const ResetPasswordModal = ({ isOpen, onClose }: ResetPasswordModalProps) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.getElementById("modal-root")!);
 };
 
-export default ResetPasswordModal;
+export default RequestResetPasswordModal;

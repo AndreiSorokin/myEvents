@@ -13,6 +13,6 @@ export type PasswordResetRequest = {
 };
 
 export type ResetPasswordRequest = {
-  token: string;
+  token: string | undefined;
   newPassword: string;
 };
