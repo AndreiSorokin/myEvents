@@ -71,6 +71,15 @@ export const authApi = createApi({
         body: { newPassword },
       }),
     }),
+    // Logout
+    logout: builder.mutation<void, void>({
+      queryFn: () => {
+        // Clear tokens from localStorage
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        return { data: undefined };
+      },
+    }),
   }),
 });
 
@@ -80,4 +89,5 @@ export const {
   useRefreshTokenMutation,
   useRequestPasswordResetMutation,
   useResetPasswordMutation,
+  useLogoutMutation,
 } = authApi;

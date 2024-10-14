@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useLoginMutation } from "../api/authSlice";
+import { useLoginMutation } from "../../api/authSlice";
 import { useNavigate } from "react-router-dom";
+import ResetPasswordModal from "./ResetPasswordModal";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { isLoading, error }] = useLoginMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -33,6 +35,7 @@ const Login = () => {
         </h2>
       </div>
 
+      {/* Email */}
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
@@ -56,6 +59,7 @@ const Login = () => {
             </div>
           </div>
 
+          {/* Password */}
           <div>
             <div className="flex items-center justify-between">
               <label
@@ -65,12 +69,13 @@ const Login = () => {
                 Password
               </label>
               <div className="text-sm">
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  onClick={() => setIsModalOpen(true)}
                 >
                   Forgot password?
-                </a>
+                </button>
               </div>
             </div>
             <div className="mt-2">
@@ -78,10 +83,9 @@ const Login = () => {
                 id="password"
                 name="password"
                 type="password"
-                required
-                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -110,10 +114,15 @@ const Login = () => {
             href="#"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
-            Start a 14-day free trial
+            Create an account
           </a>
         </p>
       </div>
+      {/* Render ResetPasswordModal */}
+      <ResetPasswordModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
