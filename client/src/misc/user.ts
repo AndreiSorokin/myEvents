@@ -22,3 +22,10 @@ export type PasswordUpdateRequest = {
   currentPassword: string;
   newPassword: string;
 };
+
+export type Organizer = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
