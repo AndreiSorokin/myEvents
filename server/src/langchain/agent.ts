@@ -8,6 +8,7 @@ import {
 import { StateGraph } from "@langchain/langgraph";
 import { Annotation } from "@langchain/langgraph";
 import { tool } from "@langchain/core/tools";
+import { DuckDuckGoSearch } from "@langchain/community/tools/duckduckgo_search";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { MongoDBSaver } from "@langchain/langgraph-checkpoint-mongodb";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
@@ -31,6 +32,23 @@ export async function callAgent(
       reducer: (x, y) => x.concat(y),
     }),
   });
+
+  // TODO: Define a tool for searching the information via DuckDuckGo
+  const internetSearchingTool = tool(
+    async ({ query }: { query: string }) => {
+      const searchTool = new DuckDuckGoSearch(); // Initialize the DuckDuckGo tool
+      const results = await searchTool.invoke(query); // Perform the search
+      return JSON.stringify(results); // Return results as JSON
+    },
+    {
+      name: "internet_search",
+      description:
+        "Performs a web search using DuckDuckGo to retrieve relevant event's information from the internet.",
+      schema: z.object({
+        query: z.string().describe("The search query for the internet search."),
+      }),
+    }
+  );
 
   // TODO: Define the tool for the agent to use
   // Purpose: To find the relevant event information based on the query -> Return a list of events with their details
@@ -68,7 +86,7 @@ export async function callAgent(
     }
   );
 
-  const tools = [eventLookupTool]; // Can add more tools as needed
+  const tools = [eventLookupTool, internetSearchingTool]; // Can add more tools as needed
 
   // We can exact the state typing via `GrapthState.State`
   const toolNode = new ToolNode<typeof GraphState.State>(tools);

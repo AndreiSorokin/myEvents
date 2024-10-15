@@ -18,12 +18,20 @@ Content-Type: application/json
   "attendees": []
 }
 
-### Chat to find Events with AI
+### Chat to find Events with AI (From MongoDB)
 POST {{host}}{{apiversion}}/events/ai
 Content-Type: application/json
 
 {
   "message": "I plan to go somewhere with my friends but I do not have that much money, can you recommend me some affordable events?"
+}
+
+### Chat to find Events with AI (From Internet)
+POST {{host}}{{apiversion}}/events/ai
+Content-Type: application/json
+
+{
+  "message": "Find me the upcoming concerts in Helsinki"
 }
 
 ### Continue the chat
