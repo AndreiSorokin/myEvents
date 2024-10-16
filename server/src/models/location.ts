@@ -10,7 +10,7 @@ import {
   validateWard,
 } from "../utils/locationValidation";
 
-const LocationSchema = new Schema<ILocation>({
+export const LocationSchema = new Schema<ILocation>({
   latitude: {
     type: Number,
   },

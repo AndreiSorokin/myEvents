@@ -19,7 +19,8 @@ const eventSchema = new Schema<IEvent>({
     maxlength: [1000, "Description cannot exceed 1000 characters"],
   },
   location: {
-    type: LocationModel.schema,
+    type: Schema.Types.ObjectId,
+    ref: "Location",
     required: [true, "Location is required"],
   },
   organizer: {
@@ -84,6 +85,8 @@ const eventSchema = new Schema<IEvent>({
       message: "All images must be valid URLs",
     },
   },
+  summary: { type: String }, // Store event summary
+  summary_embedding: { type: [Number] }, // Store embedding
 });
 
 // JSON serialization for eventSchema
