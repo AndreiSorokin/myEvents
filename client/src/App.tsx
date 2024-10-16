@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./components/auth/Login";
-import ResetPasswordForm from "./components/auth/ResetPasswordForm";
 import Events from "./pages/Events";
+import NewPassword from "./pages/NewPassword";
 
 function App() {
   return (
@@ -10,12 +10,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route>
-          <Route path="/" element={<Events />}/>
+          <Route path="/" element={<Events />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/reset-password/:token"
-            element={<ResetPasswordForm />}
-          />
+          <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>
       </Routes>
     </div>

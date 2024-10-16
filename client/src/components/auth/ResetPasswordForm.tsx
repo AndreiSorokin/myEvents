@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "../../api/authSlice";
 
-const ResetPasswordForm = () => {
-  const { token } = useParams();
+const ResetPasswordForm = ({ token }: { token: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetPassword, { isLoading, error }] = useResetPasswordMutation();
