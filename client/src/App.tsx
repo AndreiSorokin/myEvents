@@ -3,6 +3,9 @@ import Navbar from "./components/Navbar";
 import Login from "./components/auth/Login";
 import ResetPasswordForm from "./components/auth/ResetPasswordForm";
 import Events from "./pages/Events";
+import SingleEventPage from "./pages/SingleEventPage";
+import LandingPage from "./pages/LandingPage";
+import Map from "./pages/Map";
 
 function App() {
   return (
@@ -10,7 +13,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route>
-          <Route path="/" element={<Events />}/>
+          <Route path="/" element={<LandingPage/>}/>
+          <Route path="/events" element={<Events />}/>
+          <Route path="/events/:id" element={<SingleEventPage/>}/>
+          <Route path="/map" element={<Map/>}/>
           <Route path="/login" element={<Login />} />
           <Route
             path="/reset-password/:token"

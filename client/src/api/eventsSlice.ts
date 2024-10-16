@@ -8,8 +8,11 @@ export const eventsApi = createApi({
    endpoints: (builder) => ({
       getEvents: builder.query<Events, void>({
          query: () => '/'
+      }),
+      getEventById: builder.query<Event, string>({
+         query: (id) => `/${id}`
       })
    })
 })
 
-export const { useGetEventsQuery } = eventsApi;
+export const { useGetEventsQuery, useGetEventByIdQuery  } = eventsApi;

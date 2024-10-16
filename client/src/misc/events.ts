@@ -13,11 +13,16 @@ export enum EventType {
    Seminar = "seminar",
 }
 
+export type Location = {
+   latitude: number;
+   longitude: number;
+}
+
 export type Event = {
    id: string;
    name: string;
    description: string;
-   location: string;
+   location: Location;
    organizer: Organizer;
    date: Date;
    price: number;
