@@ -38,6 +38,8 @@ const userSchema = new Schema<IUser>({
     default: UserRole.User,
   },
   events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+  resetToken: { type: String },
+  resetTokenExpiration: { type: Date },
 });
 
 // JSON serialization for userSchema

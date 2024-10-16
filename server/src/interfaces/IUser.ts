@@ -9,4 +9,6 @@ export interface IUser extends Document {
   password: string;
   role: UserRole;
   events: IEvent["_id"][]; // Array of event IDs (many-to-many relationship)
+  resetToken: string | undefined;
+  resetTokenExpiration: Date | number | undefined;
 }
