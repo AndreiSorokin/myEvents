@@ -63,6 +63,10 @@ export const authApi = createApi({
         body: { email },
       }),
     }),
+    // Get reset token
+    getResetToken: builder.query<void, string>({
+      query: (token) => `auth/reset-password/${token}`,
+    }),
     // Reset Password
     resetPassword: builder.mutation<void, ResetPasswordRequest>({
       query: ({ token, newPassword }) => ({

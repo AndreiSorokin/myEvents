@@ -1,20 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { apiSlice } from "../api/apiSlice";
-import addressReducer from "./slices/addressesSlice";
+import { eventsApi } from "../api/eventsSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { authApi } from "../api/authSlice";
 import { userApi } from "@/api/userSlice";
 
 const store = configureStore({
   reducer: {
-    address: addressReducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
+    [eventsApi.reducerPath]: eventsApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      apiSlice.middleware,
+      eventsApi.middleware,
       authApi.middleware,
       userApi.middleware
     ),

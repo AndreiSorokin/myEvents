@@ -14,7 +14,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   resetToken: string
 ) => {
-  const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  const resetLink = `${process.env.CLIENT_URL}/new-password/${resetToken}`;
   const fromEmail = process.env.EMAIL_USER;
 
   const msg = {
@@ -23,7 +23,7 @@ export const sendPasswordResetEmail = async (
     subject: "Password Reset Request",
     html: `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <p>💡 <strong>Forgot Your Password?</strong></p>
+        <p><strong>Forgot Your Password?</strong></p>
         <p>If you requested a password reset, click the link below to reset your password:</p>
         <p><a href="${resetLink}" style="color: #3498db;">Reset Password</a></p>
         <p>If you didn’t request this, please ignore this email, and your password will remain unchanged.</p>

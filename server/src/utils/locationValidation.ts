@@ -27,7 +27,8 @@ const validateCity = async (
   return (
     components.city === city ||
     components.town === city ||
-    components.village === city
+    components.village === city ||
+    components.state === city
   );
 };
 
@@ -45,7 +46,8 @@ const validatePostcode = async (
     components.postcode === postcode &&
     (components.city === city ||
       components.town === city ||
-      components.village === city)
+      components.village === city ||
+      components.state === city)
   );
 };
 
@@ -60,7 +62,9 @@ const validateDistrict = async (
   );
   const components = response.data.results[0]?.components || {};
   return (
-    components.suburb === district || components.state_district === district
+    components.suburb === district ||
+    components.state_district === district ||
+    components.city_district === district
   );
 };
 

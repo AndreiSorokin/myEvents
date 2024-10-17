@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
+import { MongoClient } from "mongodb";
+import { callAgent } from "../langchain/agent";
+
+const client = new MongoClient(process.env.MONGO_DB_URL as string);
 
 // Create a new event
 export const createEvent = async (
@@ -25,6 +29,40 @@ export const createEvent = async (
     const newEvent = await eventService.createEvent(req.body);
     res.status(201).json(newEvent);
   } catch (error) {
+    next(error);
+  }
+};
+
+// Get events with AI (Start thread)
+export const getEventsWithAI = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const initialMessage = req.body.message;
+  const threadId = Date.now().toString();
+  try {
+    const response = await callAgent(client, initialMessage, threadId);
+    res.json({ threadId, response });
+  } catch (error) {
+    console.error("Error starting conversation:", error);
+    next(error);
+  }
+};
+
+// Continue thread with AI
+export const continueThread = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { threadId } = req.params;
+  const { message } = req.body;
+  try {
+    const response = await callAgent(client, message, threadId);
+    res.json({ response });
+  } catch (error) {
+    console.error("Error in chat:", error);
     next(error);
   }
 };
@@ -97,4 +135,6 @@ export default {
   getAllEvents,
   updateEvent,
   deleteEvent,
+  getEventsWithAI,
+  continueThread,
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useRequestPasswordResetMutation } from "../../api/authSlice";
 
@@ -14,6 +15,7 @@ const RequestResetPasswordModal = ({
   const [email, setEmail] = useState("");
   const [requestPasswordReset] = useRequestPasswordResetMutation();
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   // Close modal on escape key press
   useEffect(() => {
@@ -43,8 +45,8 @@ const RequestResetPasswordModal = ({
     e.preventDefault();
     try {
       await requestPasswordReset({ email }).unwrap();
-      alert("Password reset link has been sent to your email.");
       onClose();
+      navigate("/login");
     } catch (error) {
       console.error("Error resetting password:", error);
     }
