@@ -21,7 +21,7 @@ const Login = () => {
       const result = await login({ email, password }).unwrap();
       console.log("Login successful:", result);
       // Redirect after successful login
-      navigate("/");
+      navigate("/events");
     } catch (err) {
       console.error("Login failed:", err);
     }

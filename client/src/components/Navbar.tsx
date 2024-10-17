@@ -1,5 +1,5 @@
 import { useLogoutMutation } from "../api/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Navbar = () => {
   const [logout] = useLogoutMutation();
@@ -32,18 +32,24 @@ const Navbar = () => {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <a
-                  href="/"
+                <Link 
+                  to="/"
+                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/events"
                   className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
                 >
                   Events
-                </a>
-                <a
-                  href="/search"
+                </Link>
+                <Link
+                  to="/map"
                   className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                 >
-                  Search Events
-                </a>
+                  Map
+                </Link>
               </div>
             </div>
           </div>
@@ -70,12 +76,12 @@ const Navbar = () => {
                 </svg>
               </button>
             ) : (
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
               >
                 Login
-              </a>
+              </Link>
             )}
           </div>
         </div>
