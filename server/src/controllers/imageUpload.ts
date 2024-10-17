@@ -15,7 +15,7 @@ export const uploadImage = async (req: MulterRequest, res: Response, next: NextF
       const fileBuffer = req.file.buffer;
       const imageUrl = await uploadImageToCloudinary(fileBuffer, fileName);
       res.json({ imageUrl });
-   } catch (error) {
-      next(new InternalServerError());
+   } catch (error : any) {
+      next(new InternalServerError(error));
    }
 };
