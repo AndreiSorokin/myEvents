@@ -1,7 +1,7 @@
 import { useGetEventsQuery } from '@/api/eventsSlice';
-import Map from '../components/map/Map';
+import EventMap from '../components/map/EventMap';
 
-const Map = () => {
+const EventMapPage  = () => {
   const { data, error, isLoading } = useGetEventsQuery();
 
   if (isLoading) return <div>Loading...</div>;
@@ -10,9 +10,9 @@ const Map = () => {
   return (
     <div>
       <h1>Event Map</h1>
-      {data && <Map events={data.events} />}
+      {data && <EventMap events={data.events} />}
     </div>
   );
 };
 
-export default Map;
+export default EventMapPage;

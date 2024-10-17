@@ -15,7 +15,7 @@ interface EventMapProps {
   }>;
 }
 
-const Map: React.FC<EventMapProps> = ({ events }) => {
+const EventMap: React.FC<EventMapProps> = ({ events }) => {
   const mapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -46,4 +46,4 @@ const Map: React.FC<EventMapProps> = ({ events }) => {
   return <div ref={mapRef} style={{ height: '400px', width: '100%' }}></div>;
 };
 
-export default Map;
+export default EventMap;

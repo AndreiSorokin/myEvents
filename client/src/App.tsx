@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./components/auth/Login";
-import ResetPasswordForm from "./components/auth/ResetPasswordForm";
 import Events from "./pages/Events";
 import SingleEventPage from "./pages/SingleEventPage";
 import LandingPage from "./pages/LandingPage";
-import Map from "./pages/Map";
+import EventMapPage  from "./pages/EventMapPage";
+import NewPassword from "./pages/NewPassword";
 
 function App() {
   return (
@@ -16,12 +16,9 @@ function App() {
           <Route path="/" element={<LandingPage/>}/>
           <Route path="/events" element={<Events />}/>
           <Route path="/events/:id" element={<SingleEventPage/>}/>
-          <Route path="/map" element={<Map/>}/>
+          <Route path="/map" element={<EventMapPage />}/>
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/reset-password/:token"
-            element={<ResetPasswordForm />}
-          />
+          <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>
       </Routes>
     </div>
