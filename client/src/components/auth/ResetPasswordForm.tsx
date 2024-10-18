@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "../../api/authSlice";
+import { useTheme } from "../contextAPI/ThemeContext";
+import { getThemeStyles } from "@/utils/themeUtils";
 
 const ResetPasswordForm = ({ token }: { token: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetPassword, { isLoading, error }] = useResetPasswordMutation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const { bgColor, fontColor } = getThemeStyles(theme);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +31,7 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 ${bgColor} ${fontColor}`}>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           Reset Password

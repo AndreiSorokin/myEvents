@@ -2,15 +2,19 @@ import { useState } from "react";
 import { useLoginMutation } from "../../api/authSlice";
 import { useNavigate } from "react-router-dom";
 import { CreateAccountModal } from "../user/CreateAccountModal";
-import RequestResetPasswordModal from "./ResetPasswordModal";
+import RequestForgotPasswordModal from "./ForgotPasswordModal";
+import { useTheme } from "../contextAPI/ThemeContext";
+import { getThemeStyles } from "@/utils/themeUtils";
 
 const Login = () => {
+  const { theme } = useTheme();
+  const { bgColor, fontColor } = getThemeStyles(theme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { isLoading, error }] = useLoginMutation();
   const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
     useState(false);
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
 
   const navigate = useNavigate();
@@ -28,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 min-h-screen ${bgColor} ${fontColor}`}>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Your Company"
@@ -77,7 +81,7 @@ const Login = () => {
                 <button
                   type="button"
                   className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  onClick={() => setIsResetPasswordModalOpen(true)}
+                  onClick={() => setIsForgotPasswordModalOpen(true)}
                 >
                   Forgot password?
                 </button>
@@ -125,10 +129,10 @@ const Login = () => {
           </a>
         </p>
       </div>
-      {/* Render ResetPasswordModal */}
-      <RequestResetPasswordModal
-        isOpen={isResetPasswordModalOpen}
-        onClose={() => setIsResetPasswordModalOpen(false)}
+      {/* Render ForgotPasswordModal */}
+      <RequestForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={() => setIsForgotPasswordModalOpen(false)}
       />
 
       {/* Create Account Modal */}

@@ -2,20 +2,24 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { useRequestPasswordResetMutation } from "../../api/authSlice";
+import { useTheme } from "../contextAPI/ThemeContext";
+import { getThemeStyles } from "@/utils/themeUtils";
 
-interface ResetPasswordModalProps {
+interface ForgotPasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RequestResetPasswordModal = ({
+const RequestForgotPasswordModal = ({
   isOpen,
   onClose,
-}: ResetPasswordModalProps) => {
+}: ForgotPasswordModalProps) => {
   const [email, setEmail] = useState("");
   const [requestPasswordReset] = useRequestPasswordResetMutation();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const { bgColor, fontColor } = getThemeStyles(theme);
 
   // Close modal on escape key press
   useEffect(() => {
@@ -55,7 +59,7 @@ const RequestResetPasswordModal = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 p-2">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 p-2 ${bgColor} ${fontColor}`}>
       <div
         ref={modalRef}
         className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
@@ -103,4 +107,4 @@ const RequestResetPasswordModal = ({
   return createPortal(modalContent, document.getElementById("modal-root")!);
 };
 
-export default RequestResetPasswordModal;
+export default RequestForgotPasswordModal;
