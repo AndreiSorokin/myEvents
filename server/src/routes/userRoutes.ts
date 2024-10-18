@@ -5,14 +5,23 @@ import {
   getAllUsers,
   getUserById,
   updateUser,
+  updateUserPassword,
 } from "../controllers/userController";
+import { authenticateToken } from "../middleware/tokenMiddleware";
+import { authorizeRoles } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.post("/users", createUser);
-router.get("/users/:id", getUserById);
-router.get("/users", getAllUsers);
-router.put("/users/:id", updateUser);
-router.delete("/users/:id", deleteUser);
+// Public route - Create a new user
+router.post("/", createUser);
+
+// Protected routes - Users must be authenticated to access these
+router.get("/:id", authenticateToken, getUserById);
+router.put("/:id", authenticateToken, updateUser);
+router.put("/:id/update-password", authenticateToken, updateUserPassword);
+
+// Only admins can delete users
+router.get("/", authenticateToken, authorizeRoles(["admin"]), getAllUsers);
+router.delete("/:id", authenticateToken, authorizeRoles(["admin"]), deleteUser);
 
 export default router;
