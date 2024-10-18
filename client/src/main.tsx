@@ -6,12 +6,15 @@ import "./index.css";
 
 import App from "./App.tsx";
 import store from "./redux/store.ts";
+import ThemeProvider from "./components/contextAPI/ThemeContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </BrowserRouter>
     </Provider>
   </StrictMode>

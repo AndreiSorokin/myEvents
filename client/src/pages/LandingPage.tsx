@@ -1,13 +1,18 @@
+import { useTheme } from '@/components/contextAPI/ThemeContext';
+import { getThemeStyles } from '@/utils/themeUtils';
 import React from 'react'
 
-const LandengPage = () => {
+const LandingPage = () => {
+   const { theme } = useTheme();
+   const { bgColor, fontColor } = getThemeStyles(theme);
+   
    return (
       <div>
-         <div className='flex items-center justify-center h-screen'>
+         <div className={`flex items-center justify-center h-screen ${bgColor} ${fontColor}`}>
             Landing page
          </div>
       </div>
    )
 }
 
-export default LandengPage
+export default LandingPage
