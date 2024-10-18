@@ -1,3 +1,5 @@
+import { Organizer } from "./user";
+
 export enum EventType {
    Conference = "conference",
    Workshop = "workshop",
@@ -11,28 +13,26 @@ export enum EventType {
    Seminar = "seminar",
 }
 
+export type Location = {
+   latitude: number;
+   longitude: number;
+}
+
 export type Event = {
+   id: string;
    name: string;
    description: string;
-   location: string;
-   organizer: string;
+   location: Location;
+   organizer: Organizer;
    date: Date;
    price: number;
    event_link: string;
    event_type: EventType;
    attendees: string[];
    images: string[];
+   summary: string;
 };
 
-export const InitialStateEvent: Event = {
-   name: '',
-   description: '',
-   location: '',
-   organizer: '',
-   date: new Date(),
-   price: 0,
-   event_link: '',
-   event_type: EventType.Conference,
-   attendees: [],
-   images: [],
-};
+export type Events = {
+   events: Event[];
+}
