@@ -21,6 +21,8 @@ export async function callAgent(
   query: string,
   thread_id: string
 ) {
+  console.log("Starting agent with query:", query);
+
   // TODO: Define the MongoDB database and collection
   const dbName = "myEvents";
   const db = client.db(dbName);
@@ -31,12 +33,17 @@ export async function callAgent(
     messages: Annotation<BaseMessage[]>({
       reducer: (x, y) => x.concat(y),
     }),
+    current_thought: Annotation<string>(),
+    tool_results: Annotation<Record<string, any>>({
+      reducer: (x, y) => ({ ...x, ...y }),
+    }),
   });
 
   // TODO: Define a tool for searching the information via DuckDuckGo
   const internetSearchingTool = tool(
     async ({ query }: { query: string }) => {
-      const searchTool = new DuckDuckGoSearch(); // Initialize the DuckDuckGo tool
+      console.log("Executing internet search for:", query);
+      const searchTool = new DuckDuckGoSearch();
       const results = await searchTool.invoke(query); // Perform the search
       return JSON.stringify(results); // Return results as JSON
     },
