@@ -7,8 +7,12 @@ import LandingPage from "./pages/LandingPage";
 import EventMapPage from "./pages/EventMapPage";
 import NewPassword from "./pages/NewPassword";
 import ChatBox from "./components/chatbox/ChatBox";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "./components/contextAPI/ThemeContext";
 
 function App() {
+  const { theme } = useTheme();
   return (
     <div>
       <Navbar />
@@ -22,7 +26,6 @@ function App() {
           <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>
       </Routes>
-      <ChatBox />
     </div>
   );
 }

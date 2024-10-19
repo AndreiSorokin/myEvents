@@ -5,34 +5,43 @@ import { CreateAccountModal } from "../user/CreateAccountModal";
 import RequestForgotPasswordModal from "./ForgotPasswordModal";
 import { useTheme } from "../contextAPI/ThemeContext";
 import { getThemeStyles } from "@/utils/themeUtils";
+import { toast } from "react-toastify";
+import { CustomError } from "@/misc/error";
 
 const Login = () => {
   const { theme } = useTheme();
   const { bgColor, fontColor } = getThemeStyles(theme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
     useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
-
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await login({ email, password }).unwrap();
-      console.log("Login successful:", result);
-      // Redirect after successful login
+      if (!email || !password) {
+        toast.info("Please fill in all fields");
+        return;
+      }
+      await login({ email, password }).unwrap();
+      toast.success("Login successful!");
       navigate("/events");
-    } catch (err) {
-      console.error("Login failed:", err);
+    } catch (error) {
+      const err = error as CustomError;
+      toast.error(
+        "Login failed: " + (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
   return (
-    <div className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 min-h-screen ${bgColor} ${fontColor}`}>
+    <div
+      className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ${bgColor} ${fontColor}`}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Your Company"
@@ -109,12 +118,6 @@ const Login = () => {
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </div>
-
-          {error && (
-            <p className="text-red-500 text-sm">
-              Error logging in. Please try again.
-            </p>
-          )}
         </form>
 
         {/* Create an account */}

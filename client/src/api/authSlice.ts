@@ -27,14 +27,10 @@ export const authApi = createApi({
         body: { email, password },
       }),
       async onQueryStarted(_, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          // Save token and refreshToken to localStorage
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("refreshToken", data.refreshToken);
-        } catch (error) {
-          console.error("Error logging in:", error);
-        }
+        const { data } = await queryFulfilled;
+        // Save token and refreshToken to localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
       },
     }),
     // Refresh token
@@ -45,14 +41,10 @@ export const authApi = createApi({
         body: { refreshToken: localStorage.getItem("refreshToken") },
       }),
       async onQueryStarted(_, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          // Update tokens in localStorage
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("refreshToken", data.refreshToken);
-        } catch (error) {
-          console.error("Error refreshing token:", error);
-        }
+        const { data } = await queryFulfilled;
+        // Update tokens in localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
       },
     }),
     // Request Password Reset
