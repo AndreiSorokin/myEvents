@@ -35,11 +35,11 @@ Content-Type: application/json
 }
 
 ### Continue the chat
-POST {{host}}{{apiversion}}/events/ai/1728831198287
+POST {{host}}{{apiversion}}/events/ai/1729343744886
 Content-Type: application/json
 
 {
-  "message": "As I know that maybe there is a event named AI for everyone, can you provide me more details?"
+  "message": "Any free concert so far?"
 }
 
 ### Get event by ID
