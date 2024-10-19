@@ -21,7 +21,7 @@ const EventMap: React.FC<EventMapProps> = ({ events }) => {
   useEffect(() => {
     if (mapRef.current) {
       const map = new google.maps.Map(mapRef.current, {
-        center: { lat: 40.4167047, lng: -3.7035825 },
+        center: { lat: 60.1699, lng: 24.9384 },
         zoom: 5,
       });
 
