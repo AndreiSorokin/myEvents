@@ -6,9 +6,10 @@ import { IEvent } from "./IEvent";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  password?: string;
+  googleId?: string;
   role: UserRole;
   events: IEvent["_id"][]; // Array of event IDs (many-to-many relationship)
-  resetToken: string | undefined;
-  resetTokenExpiration: Date | number | undefined;
+  resetToken?: string | undefined;
+  resetTokenExpiration?: Date | number | undefined;
 }

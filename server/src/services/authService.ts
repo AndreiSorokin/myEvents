@@ -4,12 +4,23 @@ import jwt from "jsonwebtoken";
 import { IUser } from "../interfaces/IUser";
 import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { sendPasswordResetEmail } from "../utils/emailService";
+import { OAuth2Client } from "google-auth-library";
+import userService from "./userService";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Authenticate user credentials and return tokens
 export const authenticateUser = async (email: string, password: string) => {
   const user = await UserModel.findOne({ email });
   if (!user) {
     throw new NotFoundError("User not found");
+  }
+
+  // Check if the user has a password (i.e., not a Google login user)
+  if (!user.password) {
+    throw new BadRequestError(
+      "This user has no password set. Please use Google login or set a password."
+    );
   }
 
   const isValidPassword =
@@ -107,6 +118,44 @@ export const validateRefreshToken = async (refreshToken: string) => {
   return { token: newAccessToken };
 };
 
+// Verify Google Token and Authenticate User
+export const authenticateGoogleUser = async (token: string) => {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+
+  if (!payload) {
+    throw new Error("Unable to authenticate Google token");
+  }
+
+  // Extract the user information from Google
+  const { sub: googleId, email, name, picture } = payload;
+
+  // Check if user exists in the database, otherwise create a new one
+  let user = await userService.findUserByGoogleId(googleId);
+  if (!user) {
+    user = await userService.createUserFromGoogle({
+      googleId,
+      email: email || "",
+      name: name || "",
+    });
+  }
+
+  // Create JWT for authenticated user
+  const authToken = jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1h" }
+  );
+
+  return {
+    token: authToken,
+    user,
+  };
+};
+
 export default {
   authenticateUser,
   resetUserPasswordByEmail,
@@ -114,4 +163,5 @@ export default {
   resetUserPassword,
   validateRefreshToken,
   generateResetToken,
+  authenticateGoogleUser,
 };
