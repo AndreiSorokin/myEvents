@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@react-google-maps/api": "^2.20.3",
+    "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/canvas-confetti": "^1.6.4",
     "axios": "^1.7.7",

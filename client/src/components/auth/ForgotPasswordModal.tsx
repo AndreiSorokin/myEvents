@@ -78,6 +78,9 @@ const RequestForgotPasswordModal = ({
         </h3>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
+            <p className="mb-3">
+              Please enter your email address to request a password reset
+            </p>
             <label
               htmlFor="reset-email"
               className="block text-sm font-medium text-gray-700"
@@ -105,7 +108,7 @@ const RequestForgotPasswordModal = ({
               type="submit"
               className="bg-indigo-600 px-4 py-2 text-white rounded hover:bg-indigo-500"
             >
-              Reset Password
+              Send
             </button>
           </div>
         </form>
