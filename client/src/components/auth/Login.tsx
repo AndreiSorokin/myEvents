@@ -5,40 +5,47 @@ import { CreateAccountModal } from "../user/CreateAccountModal";
 import RequestForgotPasswordModal from "./ForgotPasswordModal";
 import { useTheme } from "../contextAPI/ThemeContext";
 import { getThemeStyles } from "@/utils/themeUtils";
+import { toast } from "react-toastify";
+import { CustomError } from "@/misc/error";
+import logo from "../../img/logo.png";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Login = () => {
   const { theme } = useTheme();
   const { bgColor, fontColor } = getThemeStyles(theme);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const [isCreateAccountModalOpen, setIsCreateAccountModalOpen] =
     useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
-
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await login({ email, password }).unwrap();
-      console.log("Login successful:", result);
-      // Redirect after successful login
+      if (!email || !password) {
+        toast.info("Please fill in all fields");
+        return;
+      }
+      await login({ email, password }).unwrap();
+      toast.success("Login successful!");
       navigate("/events");
-    } catch (err) {
-      console.error("Login failed:", err);
+    } catch (error) {
+      const err = error as CustomError;
+      toast.error(
+        "Login failed: " + (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
   return (
-    <div className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 min-h-screen ${bgColor} ${fontColor}`}>
+    <div
+      className={`flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ${bgColor} ${fontColor}`}
+    >
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          alt="Your Company"
-          src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-          className="mx-auto h-10 w-auto"
-        />
+        <img alt="Your Company" src={logo} className="mx-auto h-20 w-auto" />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in to your account
         </h2>
@@ -109,23 +116,22 @@ const Login = () => {
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </div>
-
-          {error && (
-            <p className="text-red-500 text-sm">
-              Error logging in. Please try again.
-            </p>
-          )}
         </form>
+
+        {/* Google Login Button */}
+        <div className="flex justify-center mt-6">
+          <GoogleLoginButton />
+        </div>
 
         {/* Create an account */}
         <p className="mt-10 text-center text-sm text-gray-500">
-          Not a member?{" "}
+          Don't have an account?{" "}
           <a
             href="#"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             onClick={() => setIsCreateAccountModalOpen(true)}
           >
-            Create an account
+            Sign up
           </a>
         </p>
       </div>

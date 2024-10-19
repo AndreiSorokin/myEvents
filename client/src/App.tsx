@@ -4,23 +4,40 @@ import Login from "./components/auth/Login";
 import Events from "./pages/Events";
 import SingleEventPage from "./pages/SingleEventPage";
 import LandingPage from "./pages/LandingPage";
-import EventMapPage  from "./pages/EventMapPage";
+import EventMapPage from "./pages/EventMapPage";
 import NewPassword from "./pages/NewPassword";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "./components/contextAPI/ThemeContext";
 
 function App() {
+  const { theme } = useTheme();
   return (
     <div>
       <Navbar />
       <Routes>
         <Route>
-          <Route path="/" element={<LandingPage/>}/>
-          <Route path="/events" element={<Events />}/>
-          <Route path="/events/:id" element={<SingleEventPage/>}/>
-          <Route path="/map" element={<EventMapPage />}/>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:id" element={<SingleEventPage />} />
+          <Route path="/map" element={<EventMapPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>
       </Routes>
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={true}
+        draggable={true}
+        pauseOnHover={true}
+        theme={theme === "dark" ? "dark" : "light"}
+        transition={Slide}
+      />
     </div>
   );
 }

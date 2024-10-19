@@ -3,35 +3,40 @@ import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "../../api/authSlice";
 import { useTheme } from "../contextAPI/ThemeContext";
 import { getThemeStyles } from "@/utils/themeUtils";
+import { toast } from "react-toastify";
+import { CustomError } from "@/misc/error";
 
 const ResetPasswordForm = ({ token }: { token: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [resetPassword, { isLoading, error }] = useResetPasswordMutation();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { bgColor, fontColor } = getThemeStyles(theme);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.info("Passwords do not match");
       return;
     }
-
     try {
       await resetPassword({ token, newPassword }).unwrap();
-      alert("Password reset successfully!");
-      // Redirect to login after success
       navigate("/login");
-    } catch (err) {
-      console.error("Error resetting password:", err);
+      toast.success("Password reset successful");
+    } catch (error) {
+      const err = error as CustomError;
+      toast.error(
+        "Password reset failed: " +
+          (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 ${bgColor} ${fontColor}`}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 ${bgColor} ${fontColor}`}
+    >
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <h3 className="text-lg font-medium leading-6 text-gray-900">
           Reset Password
@@ -80,10 +85,6 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
               {isLoading ? "Resetting..." : "Reset Password"}
             </button>
           </div>
-
-          {error && (
-            <p className="text-red-500 text-sm">Error resetting password</p>
-          )}
         </form>
       </div>
     </div>

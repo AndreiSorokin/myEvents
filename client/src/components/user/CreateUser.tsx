@@ -1,6 +1,8 @@
 import { useCreateUserMutation } from "@/api/userSlice";
 import { useState } from "react";
 import { ConfettiButton } from "../ui/confetti";
+import { CustomError } from "@/misc/error";
+import { toast } from "react-toastify";
 
 interface CreateUserProps {
   role: "user" | "organizer";
@@ -17,10 +19,14 @@ const CreateUser = ({ role, onClose }: CreateUserProps) => {
     e.preventDefault();
     try {
       await createUser({ name, email, password, role }).unwrap();
-      alert("User created successfully!");
       onClose();
-    } catch (err) {
-      console.error("Error creating user:", err);
+      toast.success("User created successfully!");
+    } catch (error) {
+      const err = error as CustomError;
+      toast.error(
+        "Error create a new user, please try again later! Error: " +
+          (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
@@ -74,7 +80,6 @@ const CreateUser = ({ role, onClose }: CreateUserProps) => {
           {isLoading ? "Creating..." : "Create Account"}
         </ConfettiButton>
       </div>
-
       {error && (
         <p className="text-red-500 text-sm">Error: {JSON.stringify(error)}</p>
       )}

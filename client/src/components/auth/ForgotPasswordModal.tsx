@@ -4,6 +4,8 @@ import { createPortal } from "react-dom";
 import { useRequestPasswordResetMutation } from "../../api/authSlice";
 import { useTheme } from "../contextAPI/ThemeContext";
 import { getThemeStyles } from "@/utils/themeUtils";
+import { CustomError } from "@/misc/error";
+import { toast } from "react-toastify";
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -51,15 +53,22 @@ const RequestForgotPasswordModal = ({
       await requestPasswordReset({ email }).unwrap();
       onClose();
       navigate("/login");
+      toast.success("Password reset link sent to your email");
     } catch (error) {
-      console.error("Error resetting password:", error);
+      const err = error as CustomError;
+      toast.error(
+        "Sending password reset link faiked: " +
+          (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 p-2 ${bgColor} ${fontColor}`}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-75 p-2 ${bgColor} ${fontColor}`}
+    >
       <div
         ref={modalRef}
         className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
@@ -69,6 +78,9 @@ const RequestForgotPasswordModal = ({
         </h3>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
+            <p className="mb-3">
+              Please enter your email address to request a password reset
+            </p>
             <label
               htmlFor="reset-email"
               className="block text-sm font-medium text-gray-700"
@@ -96,7 +108,7 @@ const RequestForgotPasswordModal = ({
               type="submit"
               className="bg-indigo-600 px-4 py-2 text-white rounded hover:bg-indigo-500"
             >
-              Reset Password
+              Send
             </button>
           </div>
         </form>
