@@ -87,8 +87,8 @@ export const getAllEvents = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
+  const page = parseInt(req.query.page as string);
+  const limit = parseInt(req.query.limit as string);
 
   try {
     const { events, total } = await eventService.fetchAllEvents(page, limit);

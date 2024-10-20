@@ -141,14 +141,14 @@ export const findEventById = async (id: string): Promise<IEvent> => {
 
 // Fetch all events (with optional pagination)
 export const fetchAllEvents = async (
-  page: number,
-  limit: number
+  page?: number,
+  limit?: number
 ): Promise<{ events: IEvent[]; total: number }> => {
   try {
-    const skip = (page - 1) * limit;
+    const skip = ((page ?? 1) - 1) * (limit ?? 10);
     const events = await EventModel.find()
       .skip(skip)
-      .limit(limit)
+      .limit(limit ?? 10)
       .populate("organizer attendees")
       .populate("location");
     const total = await EventModel.countDocuments();

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { MessageCircle, ChevronLeft } from "lucide-react";
 import {
   useAiChatMutation,
@@ -11,13 +11,16 @@ type Message = {
   sender: "user" | "ai";
 };
 
-export default function ChatBox() {
+const ChatBox: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [aiChat] = useAiChatMutation();
-  const [continueAiChat] = useContinueAiChatMutation();
+
+  const [aiChat, { isLoading: isAiChatLoading }] = useAiChatMutation();
+  const [continueAiChat, { isLoading: isContinueAiChatLoading }] =
+    useContinueAiChatMutation();
+
+  const isLoading = isAiChatLoading || isContinueAiChatLoading;
 
   useEffect(() => {
     localStorage.removeItem("aiThreadId");
@@ -27,48 +30,66 @@ export default function ChatBox() {
     };
   }, []);
 
-  const toggleChat = () => setIsOpen(!isOpen);
+  const toggleChat = useCallback(() => setIsOpen((prev) => !prev), []);
 
-  const sendMessage = async (text: string) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      sender: "user",
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
-
-    const threadId = localStorage.getItem("aiThreadId");
-
-    try {
-      let responseMessage;
-      if (threadId) {
-        const { response } = await continueAiChat({
-          message: text,
-          threadId,
-        }).unwrap();
-        responseMessage = response;
-      } else {
-        const { threadId: newThreadId, response } = await aiChat({
-          message: text,
-        }).unwrap();
-        localStorage.setItem("aiThreadId", newThreadId);
-        responseMessage = response;
-      }
-
-      const aiMessage: Message = {
+  const sendMessage = useCallback(
+    async (text: string) => {
+      const userMessage: Message = {
         id: Date.now().toString(),
-        text: responseMessage,
-        sender: "ai",
+        text,
+        sender: "user",
       };
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      console.error("Error sending message to AI", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
+      setMessages((prev) => [...prev, userMessage]);
+
+      const threadId = localStorage.getItem("aiThreadId");
+
+      try {
+        let responseMessage;
+        if (threadId) {
+          const { response } = await continueAiChat({
+            message: text,
+            threadId,
+          }).unwrap();
+          responseMessage = response;
+        } else {
+          const { threadId: newThreadId, response } = await aiChat({
+            message: text,
+          }).unwrap();
+          localStorage.setItem("aiThreadId", newThreadId);
+          responseMessage = response;
+        }
+
+        const aiMessage: Message = {
+          id: Date.now().toString(),
+          text: responseMessage,
+          sender: "ai",
+        };
+        setMessages((prev) => [...prev, aiMessage]);
+      } catch (error) {
+        console.error("Error sending message to AI", error);
+      }
+    },
+    [aiChat, continueAiChat]
+  );
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (inputMessage.trim() && !isLoading) {
+        sendMessage(inputMessage);
+        setInputMessage("");
+      }
+    },
+    [inputMessage, isLoading, sendMessage]
+  );
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputMessage(e.target.value);
+    },
+    []
+  );
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -123,19 +144,13 @@ export default function ChatBox() {
             )}
           </div>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (inputMessage.trim() && !isLoading) {
-                sendMessage(inputMessage);
-                setInputMessage("");
-              }
-            }}
+            onSubmit={handleSubmit}
             className="border-t border-gray-200 p-4 flex"
           >
             <input
               type="text"
               value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
+              onChange={handleInputChange}
               placeholder="Type your message..."
               className="flex-1 bg-gray-100 text-gray-800 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               disabled={isLoading}
@@ -157,4 +172,6 @@ export default function ChatBox() {
       )}
     </div>
   );
-}
+};
+
+export default React.memo(ChatBox);

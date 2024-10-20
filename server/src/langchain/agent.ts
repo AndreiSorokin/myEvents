@@ -16,6 +16,18 @@ import { MongoClient } from "mongodb";
 import "dotenv/config";
 import { z } from "zod";
 
+// Helper function to format event information
+function formatEvent(event: any): string {
+  return `
+- Name: ${event.name}
+  Date: ${event.date}
+  Price: ${event.price} EUR
+  Location: ${event.location}
+  Type: ${event.event_type}
+  URL: ${event.event_link || "N/A"}
+  `;
+}
+
 export async function callAgent(
   client: MongoClient,
   query: string,
@@ -42,7 +54,7 @@ export async function callAgent(
   // TODO: Define a tool for searching the information via DuckDuckGo
   const internetSearchingTool = tool(
     async ({ query }: { query: string }) => {
-      console.log("Executing internet search for:", query);
+      console.log("Executing internet search for: ", query);
       const searchTool = new DuckDuckGoSearch();
       const results = await searchTool.invoke(query); // Perform the search
       return JSON.stringify(results); // Return results as JSON
@@ -57,11 +69,10 @@ export async function callAgent(
     }
   );
 
-  // TODO: Define the tool for the agent to use
-  // Purpose: To find the relevant event information based on the query -> Return a list of events with their details
+  // TODO: Define the tool for looking up information in the database
   const eventLookupTool = tool(
     async ({ query, n = 10 }: { query: string; n?: number }) => {
-      console.log("Event lookup tool called");
+      console.log("Event lookup tool called for query: ", query);
 
       const dbConfig = {
         collection: collection,
@@ -109,39 +120,69 @@ export async function callAgent(
     const messages = state.messages;
     const lastMessage = messages[messages.length - 1] as AIMessage;
 
+    // Log the LLM's reasoning process (thoughts)
+    console.log("LLM's current thought:", state.current_thought);
+
     // If the LLM makes a tool call, then we route to the "tools" node
     if (lastMessage.tool_calls?.length) {
+      console.log("LLM decided to call a tool.");
       return "tools";
     }
 
     // Otherwise, we stop (reply to the user)
+    console.log("LLM decided to provide a final answer.");
     return "__end__";
   }
 
+  const systemMessage = `You are a helpful AI specializing in event recommendations, collaborating with other assistants. Use the provided tools to progress towards answering the question. If you are unable to fully answer, that's OK, another assistant with different tools will help where you left off. Execute what you can to make progress. If you or any of the other assistants have the final answer or deliverable, prefix your response with FINAL ANSWER so the team knows to stop. You have access to the following tools: {tool_names}.
+
+  When recommending events:
+  1. Consider the user's preferences and budget.
+  2. Provide a brief introduction (1-2 sentences).
+  3. List events in a structured format of:
+     {event_details}
+  4. Conclude with a short summary or additional advice (1-2 sentences).
+  5. If the query is some kinda basic conversation like "hi, hello, how are you,...", be polite with a response to greeting back also introduce yourself and ask how can you help the users.
+
+  Current time: {time}.`;
+
+  const prompt = ChatPromptTemplate.fromMessages([
+    ["system", systemMessage],
+    new MessagesPlaceholder("messages"),
+  ]);
+
   // TODO: Define the function that calls the model (Main entry point for the agent)
   async function callModel(state: typeof GraphState.State) {
-    const prompt = ChatPromptTemplate.fromMessages([
-      [
-        "system",
-        `You are a helpful AI specializing in event recommendations, collaborating with other assistants. Use the provided tools to progress towards answering the question. If you are unable to fully answer, that's OK, another assistant with different tools will help where you left off. Execute what you can to make progress. If you or any of the other assistants have the final answer or deliverable, prefix your response with FINAL ANSWER so the team knows to stop. You have access to the following tools: {tool_names}.\n{system_message}\nCurrent time: {time}.
-        
-        When recommending events:
-        1. Consider the user's preferences and budget.
-        2. Provide brief details about each event (name, date, price, type).
-        3. If applicable, suggest why an event might be suitable for the user.
-        `,
-      ],
-      new MessagesPlaceholder("messages"),
-    ]);
-
     const formattedPrompt = await prompt.formatMessages({
-      system_message: "You are helpful Event Guide Chatbot Agent.",
+      system_message: "You are helpful Event Guide Chatbot Agent named Ebot.",
       time: new Date().toISOString(),
       tool_names: tools.map((tool) => tool.name).join(", "),
       messages: state.messages,
+      event_details: "The short details of the event based on event's summary",
     });
 
+    console.log("Calling model with prompt:", formattedPrompt);
     const result = await model.invoke(formattedPrompt);
+    console.log("Model response:", result);
+    state.current_thought =
+      typeof result.content === "string"
+        ? result.content
+        : JSON.stringify(result.content);
+
+    // Format the response
+    if (
+      typeof result.content === "string" &&
+      result.content.includes("FINAL ANSWER")
+    ) {
+      const formattedContent = result.content.replace(
+        /\[EVENT_LIST\]([\s\S]*?)\[\/EVENT_LIST\]/g,
+        (match, p1) => {
+          const events = JSON.parse(p1);
+          return events.map(formatEvent).join("\n");
+        }
+      );
+      result.content = formattedContent;
+    }
 
     return { messages: [result] };
   }
@@ -169,7 +210,10 @@ export async function callAgent(
     { recursionLimit: 15, configurable: { thread_id: thread_id } }
   );
 
-  console.log(finalState.messages[finalState.messages.length - 1].content);
+  console.log(
+    "FINAL STATE MESSAGE:",
+    finalState.messages[finalState.messages.length - 1].content
+  );
 
   return finalState.messages[finalState.messages.length - 1].content;
 }

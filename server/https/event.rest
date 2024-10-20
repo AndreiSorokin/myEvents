@@ -1,5 +1,5 @@
 @host = http://localhost:3003
-@eventId = 670bddbdc15ac8ad9324bb49
+@eventId = 6714cf65106266b65dc1e350
 @apiversion = /api/v1
 
 ### Create a new event
@@ -7,12 +7,12 @@ POST {{host}}{{apiversion}}/events
 Content-Type: application/json
 
 {
-  "name": "AI for everyone",
-  "description": "A fundamental of AI for beginners",
-  "location": "670535642a5a13d07b8b412f",
-  "organizer": "67013529a2556b0192e1acfb",
+  "name": "Junction 2026",
+  "description": "The best hackathon organized first time in Vietnam",
+  "location": "6715283220d55c2e89aaf8cd",
+  "organizer": "670be2709803890eedec5bdd",
   "date": "2026-12-01T14:00:00.000Z",
-  "price": 150,
+  "price": 10,
   "event_link": "https://example.com/ai-conference",
   "event_type": "conference",
   "attendees": []
@@ -46,7 +46,7 @@ Content-Type: application/json
 GET {{host}}{{apiversion}}/events/{{eventId}}
 
 ### Fetch all events with pagination
-GET {{host}}{{apiversion}}/events?page=1&limit=10
+GET {{host}}{{apiversion}}/events?page=1&limit=11
 
 ### Update event by ID (partial update - only date)
 PUT {{host}}{{apiversion}}/events/{{eventId}}
