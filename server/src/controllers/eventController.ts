@@ -3,6 +3,8 @@ import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
 import { callAgent } from "../langchain/agent";
+import { FilterQuery } from "mongoose";
+import { IEvent } from "../interfaces/IEvent";
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);
 
@@ -89,9 +91,10 @@ export const getAllEvents = async (
 ): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
+  const searchQuery = req.query.search as string || "";
 
   try {
-    const { events, total } = await eventService.fetchAllEvents(page, limit);
+    const { events, total } = await eventService.fetchAllEvents(page, limit, searchQuery);
     res.status(200).json({ events, total, page, limit });
   } catch (error) {
     next(error);

@@ -6,7 +6,7 @@ import {
   BadRequestError,
 } from "../errors/ApiError";
 import { UserModel } from "../models/user";
-import { Types } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { LocationModel } from "../models/location";
 import {
   summarizeEvent,
@@ -142,11 +142,19 @@ export const findEventById = async (id: string): Promise<IEvent> => {
 // Fetch all events (with optional pagination)
 export const fetchAllEvents = async (
   page: number,
-  limit: number
+  limit: number,
+  searchQuery: string = ""
 ): Promise<{ events: IEvent[]; total: number }> => {
+
+  const query: FilterQuery<IEvent> = {};
+
+  if (searchQuery) {
+    query.name = { $regex: new RegExp(searchQuery, 'i') };
+  }
+
   try {
     const skip = (page - 1) * limit;
-    const events = await EventModel.find()
+    const events = await EventModel.find(query)
       .skip(skip)
       .limit(limit)
       .populate("organizer attendees")
