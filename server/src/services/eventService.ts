@@ -159,7 +159,7 @@ export const fetchAllEvents = async (
       .limit(limit)
       .populate("organizer attendees")
       .populate("location");
-    const total = await EventModel.countDocuments();
+    const total = await EventModel.countDocuments(query);
     return { events, total };
   } catch (error) {
     throw new InternalServerError("Error fetching events");
