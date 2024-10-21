@@ -7,8 +7,11 @@ export const eventsApi = createApi({
   reducerPath: "eventsApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    getEvents: builder.query<Events, void>({
-      query: () => "/events",
+    getEvents: builder.query<Events, { limit: number; page: number; searchQuery?: string }>({
+      query: ({ limit, page, searchQuery }) => ({
+        url: '/events',
+        params: { limit, page, searchQuery }
+      })
     }),
     getEventById: builder.query<Event, string>({
       query: (id) => `/events/${id}`,

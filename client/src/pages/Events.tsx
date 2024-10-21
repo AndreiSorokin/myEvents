@@ -6,10 +6,16 @@ import { useTheme } from '@/components/contextAPI/ThemeContext';
 import { useState } from 'react';
 
 const Events = () => {
-   const { data, error, isLoading } = useGetEventsQuery();
+
    const { theme } = useTheme();
    const { bgColor, fontColor } = getThemeStyles(theme);
    const [searchItem, setSearchItem ] = useState('');
+
+   const { data, error, isLoading } = useGetEventsQuery({
+      limit: 10,
+      page: 1,
+      searchQuery: searchItem
+   });
 
    const shadowClass = theme === 'dark' ? 'shadow-lg shadow-gray-700' : 'shadow-md shadow-gray-300';
 
