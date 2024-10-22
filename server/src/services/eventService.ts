@@ -6,7 +6,7 @@ import {
   BadRequestError,
 } from "../errors/ApiError";
 import { UserModel } from "../models/user";
-import { Types } from "mongoose";
+import { FilterQuery, Types, SortOrder } from "mongoose";
 import { LocationModel } from "../models/location";
 import {
   summarizeEvent,
@@ -14,6 +14,8 @@ import {
 } from "../langchain/summarizeService";
 
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { startOfDay, endOfDay } from 'date-fns';
+
 
 const llm = new GoogleGenerativeAIEmbeddings({
   model: "text-embedding-004",
@@ -80,6 +82,12 @@ export const createEvent = async (
     );
   }
 
+  // Parse the date if it's a string
+  const eventDate = typeof date === 'string' ? new Date(date) : date;
+  if (!eventDate || isNaN(eventDate.getTime())) {
+    throw new BadRequestError("Invalid date format");
+  }
+
   try {
     // Fetch location and organizer details
     const locationDetails = await LocationModel.findById(locationId);
@@ -142,16 +150,47 @@ export const findEventById = async (id: string): Promise<IEvent> => {
 // Fetch all events (with optional pagination)
 export const fetchAllEvents = async (
   page: number,
-  limit: number
+  limit: number,
+  searchQuery: string = "",
+  eventTypeQuery?: string,
+  minPrice? : number,
+  maxPrice?: number,
+  date?: Date
 ): Promise<{ events: IEvent[]; total: number }> => {
+
+  const query: FilterQuery<IEvent> = {};
+
+  if (searchQuery) {
+    query.name = { $regex: new RegExp(searchQuery, 'i') };
+  }
+
+  if (eventTypeQuery) {
+    query.event_type = { $regex: new RegExp(eventTypeQuery, 'i') };
+  }
+
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    query.price = { $gte: minPrice, $lte: maxPrice };
+  }
+
+  if (date) {
+    const parsedDate = new Date(date);
+    if (!isNaN(parsedDate.getTime())) {
+      query.date = { $gte: startOfDay(parsedDate), $lte: endOfDay(parsedDate) };
+    }
+  }
+
+  console.log('services', page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date)
+
+
   try {
-    const skip = (page - 1) * limit;
-    const events = await EventModel.find()
+    const skip = (page - 1) * limit; 
+
+    const events = await EventModel.find(query)
       .skip(skip)
       .limit(limit)
       .populate("organizer attendees")
       .populate("location");
-    const total = await EventModel.countDocuments();
+    const total = await EventModel.countDocuments(query);
     return { events, total };
   } catch (error) {
     throw new InternalServerError("Error fetching events");

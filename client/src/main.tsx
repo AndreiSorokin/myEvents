@@ -10,8 +10,10 @@ import ThemeProvider from "./components/contextAPI/ThemeContext.tsx";
 
 // Function to dynamically load the Google Maps script
 const loadGoogleMapsScript = () => {
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAP_API_KEY}`;
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${
+    import.meta.env.VITE_GOOGLE_MAP_API_KEY
+  }`;
   script.async = true;
   document.body.appendChild(script);
 };
