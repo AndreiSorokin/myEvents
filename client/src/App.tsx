@@ -26,6 +26,20 @@ function App() {
           <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>
       </Routes>
+      <ChatBox />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={true}
+        draggable={true}
+        pauseOnHover={true}
+        theme={theme === "dark" ? "dark" : "light"}
+        transition={Slide}
+      />
     </div>
   );
 }
