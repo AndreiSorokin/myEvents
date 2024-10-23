@@ -6,13 +6,12 @@ import {
   BadRequestError,
 } from "../errors/ApiError";
 import { UserModel } from "../models/user";
-import { Types } from "mongoose";
+import { FilterQuery, Types, SortOrder } from "mongoose";
 import { LocationModel } from "../models/location";
-import {
-  createEventSummary,
-} from "../langchain/summarizeService";
+import { createEventSummary } from "../langchain/summarizeService";
 
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { startOfDay, endOfDay } from "date-fns";
 
 const llm = new GoogleGenerativeAIEmbeddings({
   model: "text-embedding-004",
@@ -58,12 +57,6 @@ export const createEvent = async (
     throw new BadRequestError("Location not found");
   }
 
-  // Check if an event with the same name already exists
-  const existingEvent = await EventModel.findOne({ name });
-  if (existingEvent) {
-    throw new BadRequestError("An event with this name already exists.");
-  }
-
   //Check if all required fields are provided
   if (
     !name ||
@@ -77,6 +70,12 @@ export const createEvent = async (
     throw new BadRequestError(
       "Ensure you have added all necessary information"
     );
+  }
+
+  // Parse the date if it's a string
+  const eventDate = typeof date === "string" ? new Date(date) : date;
+  if (!eventDate || isNaN(eventDate.getTime())) {
+    throw new BadRequestError("Invalid date format");
   }
 
   try {
@@ -140,17 +139,61 @@ export const findEventById = async (id: string): Promise<IEvent> => {
 
 // Fetch all events (with optional pagination)
 export const fetchAllEvents = async (
-  page?: number,
-  limit?: number
+  page: number,
+  limit: number,
+  searchQuery: string = "",
+  eventTypeQuery?: string,
+  minPrice?: number,
+  maxPrice?: number,
+  date?: Date
 ): Promise<{ events: IEvent[]; total: number }> => {
+  const query: FilterQuery<IEvent> = {};
+
+  if (searchQuery) {
+    query.name = { $regex: new RegExp(searchQuery, "i") };
+  }
+
+  if (eventTypeQuery) {
+    query.event_type = { $regex: new RegExp(eventTypeQuery, "i") };
+  }
+
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query.price = {};
+    if (minPrice !== undefined) {
+      query.price.$gte = minPrice;
+    }
+    if (maxPrice !== undefined) {
+      query.price.$lte = maxPrice;
+    }
+  }
+
+  if (date) {
+    const parsedDate = new Date(date);
+    if (!isNaN(parsedDate.getTime())) {
+      query.date = { $gte: startOfDay(parsedDate), $lte: endOfDay(parsedDate) };
+    }
+  }
+
+  console.log(
+    "services",
+    page,
+    limit,
+    searchQuery,
+    eventTypeQuery,
+    minPrice,
+    maxPrice,
+    date
+  );
+
   try {
-    const skip = ((page ?? 1) - 1) * (limit ?? 10);
-    const events = await EventModel.find()
+    const skip = (page - 1) * limit;
+
+    const events = await EventModel.find(query)
       .skip(skip)
-      .limit(limit ?? 10)
+      .limit(limit)
       .populate("organizer attendees")
       .populate("location");
-    const total = await EventModel.countDocuments();
+    const total = await EventModel.countDocuments(query);
     return { events, total };
   } catch (error) {
     throw new InternalServerError("Error fetching events");
