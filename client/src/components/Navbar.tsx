@@ -3,6 +3,9 @@ import { useLogoutMutation } from "../api/authSlice";
 import { useTheme } from "./contextAPI/ThemeContext";
 import { SunIcon, MoonIcon } from "@heroicons/react/outline";
 import { getThemeStyles } from "@/utils/themeUtils";
+import { toast } from "react-toastify";
+import { CustomError } from "@/misc/error";
+import logo from "../img/logo.png";
 
 const Navbar = () => {
   const [logout] = useLogoutMutation();
@@ -14,10 +17,15 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
+      toast.info("You have been logged out");
       // Redirect to login page after logout
       navigate("/login");
     } catch (error) {
-      console.error("Failed to logout", error);
+      const err = error as CustomError;
+      toast.error(
+        "Error during log out, please try again later! Error: " +
+          (err.data?.message || err.message || "Unknown error")
+      );
     }
   };
 
@@ -30,11 +38,7 @@ const Navbar = () => {
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
-                <img
-                  className="h-8 w-auto"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                  alt="Your Company"
-                />
+                <img className="h-8 w-auto" src={logo} alt="Your Company" />
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
@@ -73,23 +77,9 @@ const Navbar = () => {
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
                 >
-                  <span className="sr-only">Logout</span>
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  Logout
                 </button>
               ) : (
                 <Link
