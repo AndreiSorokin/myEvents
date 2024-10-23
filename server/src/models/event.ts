@@ -7,7 +7,6 @@ const eventSchema = new Schema<IEvent>({
   name: {
     type: String,
     required: [true, "Event name is required"],
-    unique: true,
     minlength: [3, "Event name must be at least 3 characters long"],
     maxlength: [100, "Event name cannot exceed 100 characters"],
     trim: true,

@@ -61,12 +61,6 @@ export const createEvent = async (
     throw new BadRequestError("Location not found");
   }
 
-  // Check if an event with the same name already exists
-  const existingEvent = await EventModel.findOne({ name });
-  if (existingEvent) {
-    throw new BadRequestError("An event with this name already exists.");
-  }
-
   //Check if all required fields are provided
   if (
     !name ||
