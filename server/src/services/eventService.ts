@@ -8,14 +8,10 @@ import {
 import { UserModel } from "../models/user";
 import { FilterQuery, Types, SortOrder } from "mongoose";
 import { LocationModel } from "../models/location";
-import {
-  summarizeEvent,
-  createEventSummary,
-} from "../langchain/summarizeService";
+import { createEventSummary } from "../langchain/summarizeService";
 
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { startOfDay, endOfDay } from 'date-fns';
-
+import { startOfDay, endOfDay } from "date-fns";
 
 const llm = new GoogleGenerativeAIEmbeddings({
   model: "text-embedding-004",
@@ -77,7 +73,7 @@ export const createEvent = async (
   }
 
   // Parse the date if it's a string
-  const eventDate = typeof date === 'string' ? new Date(date) : date;
+  const eventDate = typeof date === "string" ? new Date(date) : date;
   if (!eventDate || isNaN(eventDate.getTime())) {
     throw new BadRequestError("Invalid date format");
   }
@@ -143,23 +139,22 @@ export const findEventById = async (id: string): Promise<IEvent> => {
 
 // Fetch all events (with optional pagination)
 export const fetchAllEvents = async (
-  page: number,
-  limit: number,
+  page?: number,
+  limit?: number,
   searchQuery: string = "",
   eventTypeQuery?: string,
-  minPrice? : number,
+  minPrice?: number,
   maxPrice?: number,
   date?: Date
 ): Promise<{ events: IEvent[]; total: number }> => {
-
   const query: FilterQuery<IEvent> = {};
 
   if (searchQuery) {
-    query.name = { $regex: new RegExp(searchQuery, 'i') };
+    query.name = { $regex: new RegExp(searchQuery, "i") };
   }
 
   if (eventTypeQuery) {
-    query.event_type = { $regex: new RegExp(eventTypeQuery, 'i') };
+    query.event_type = { $regex: new RegExp(eventTypeQuery, "i") };
   }
 
   if (minPrice !== undefined || maxPrice !== undefined) {
@@ -179,15 +174,22 @@ export const fetchAllEvents = async (
     }
   }
 
-  console.log('services', page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date)
-
+  console.log(
+    "services",
+    page,
+    limit,
+    searchQuery,
+    eventTypeQuery,
+    minPrice,
+    maxPrice,
+    date
+  );
 
   try {
-    const skip = (page - 1) * limit; 
-
-    const events = await EventModel.find(query)
+    const skip = ((page ?? 1) - 1) * (limit ?? 10);
+    const events = await EventModel.find()
       .skip(skip)
-      .limit(limit)
+      .limit(limit ?? 10)
       .populate("organizer attendees")
       .populate("location");
     const total = await EventModel.countDocuments(query);

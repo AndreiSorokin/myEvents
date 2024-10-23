@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
-import { callAgent } from "../langchain/agent";
+import { callEventSearchAgent } from "../langchain/eventAgents";
 import { FilterQuery } from "mongoose";
 import { IEvent } from "../interfaces/IEvent";
 import { EventType } from "../enums/EventType";
@@ -45,7 +45,11 @@ export const getEventsWithAI = async (
   const initialMessage = req.body.message;
   const threadId = Date.now().toString();
   try {
-    const response = await callAgent(client, initialMessage, threadId);
+    const response = await callEventSearchAgent(
+      client,
+      initialMessage,
+      threadId
+    );
     res.json({ threadId, response });
   } catch (error) {
     console.error("Error starting conversation:", error);
@@ -62,7 +66,7 @@ export const continueThread = async (
   const { threadId } = req.params;
   const { message } = req.body;
   try {
-    const response = await callAgent(client, message, threadId);
+    const response = await callEventSearchAgent(client, message, threadId);
     res.json({ response });
   } catch (error) {
     console.error("Error in chat:", error);
@@ -90,8 +94,10 @@ export const getAllEvents = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
+
+  const page = parseInt(req.query.page as string);
+  const limit = parseInt(req.query.limit as string);
+
   const searchQuery = req.query.searchQuery as string || "";
   const eventTypeQuery = req.query.eventTypeQuery as EventType || "";
   const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined;
