@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import authService from "../services/authService";
-import userService from "../services/userService";
-import { BadRequestError, NotFoundError } from "../errors/ApiError";
+import { BadRequestError } from "../errors/ApiError";
 import { IUser } from "../interfaces/IUser";
 
 // Login Controller
@@ -85,6 +84,21 @@ export const refreshToken = async (
   try {
     const newToken = await authService.validateRefreshToken(refreshToken);
     res.json({ token: newToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Google Login
+export const googleLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { token } = req.body;
+    const result = await authService.authenticateGoogleUser(token);
+    res.json(result);
   } catch (error) {
     next(error);
   }

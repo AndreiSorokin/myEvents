@@ -18,7 +18,9 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: function () {
+      return !this.googleId;
+    },
     minlength: [8, "Password must be at least 8 characters long"],
     maxlength: [100, "Password cannot exceed 100 characters"],
     validate: {
@@ -28,6 +30,11 @@ const userSchema = new Schema<IUser>({
       },
       message: "Password must contain at least one letter and one number",
     },
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   role: {
     type: String,

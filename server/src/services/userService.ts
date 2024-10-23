@@ -18,11 +18,13 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
     const newUser = new UserModel({
       name,
       email,
-      password,
       role,
     });
-    const hashedPassword = await bcrypt.hash(newUser.password, 10);
-    newUser.password = hashedPassword;
+    // Only hash the password if it is provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      newUser.password = hashedPassword;
+    }
     return await newUser.save();
   } catch (error) {
     throw error;
@@ -50,6 +52,13 @@ export const updateUserPassword = async (
       currentPassword.trim() === ""
     ) {
       throw new BadRequestError("Please provide current and new passwords");
+    }
+
+    // Check if the user has a password (i.e., not a Google login user)
+    if (!user.password) {
+      throw new BadRequestError(
+        "This user has no password set. Please set a password first."
+      );
     }
 
     // Verify if the current password matches the user's stored password
@@ -149,6 +158,26 @@ export const deleteUser = async (id: string): Promise<void> => {
   }
 };
 
+// Create an new user from Google
+const createUserFromGoogle = async (userData: {
+  googleId: string;
+  email: string;
+  name: string;
+}): Promise<IUser> => {
+  const newUser = new UserModel({
+    googleId: userData.googleId,
+    email: userData.email,
+    name: userData.name,
+    role: "user",
+  });
+  return await newUser.save();
+};
+
+// Find user by Google ID
+const findUserByGoogleId = async (googleId: string): Promise<IUser | null> => {
+  return await UserModel.findOne({ googleId });
+};
+
 export default {
   createUser,
   updateUserPassword,
@@ -157,4 +186,6 @@ export default {
   fetchAllUsers,
   updateUser,
   deleteUser,
+  createUserFromGoogle,
+  findUserByGoogleId,
 };

@@ -7,6 +7,7 @@ import "./index.css";
 import App from "./App.tsx";
 import store from "./redux/store.ts";
 import ThemeProvider from "./components/contextAPI/ThemeContext.tsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Function to dynamically load the Google Maps script
 const loadGoogleMapsScript = () => {
@@ -26,7 +27,11 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider>
-          <App />
+          <GoogleOAuthProvider
+            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}
+          >
+            <App />
+          </GoogleOAuthProvider>
         </ThemeProvider>
       </BrowserRouter>
     </Provider>

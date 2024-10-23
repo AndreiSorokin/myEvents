@@ -3,6 +3,9 @@ import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
 import { callEventSearchAgent } from "../langchain/eventAgents";
+import { FilterQuery } from "mongoose";
+import { IEvent } from "../interfaces/IEvent";
+import { EventType } from "../enums/EventType";
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);
 
@@ -91,11 +94,20 @@ export const getAllEvents = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+
   const page = parseInt(req.query.page as string);
   const limit = parseInt(req.query.limit as string);
 
+  const searchQuery = req.query.searchQuery as string || "";
+  const eventTypeQuery = req.query.eventTypeQuery as EventType || "";
+  const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined;
+  const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined;
+  const date = req.query.date ? new Date(req.query.date as string) : undefined;
+
+  console.log('controllers', page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date)
+
   try {
-    const { events, total } = await eventService.fetchAllEvents(page, limit);
+    const { events, total } = await eventService.fetchAllEvents(page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date);
     res.status(200).json({ events, total, page, limit });
   } catch (error) {
     next(error);

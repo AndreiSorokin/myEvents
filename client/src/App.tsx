@@ -6,9 +6,15 @@ import SingleEventPage from "./pages/SingleEventPage";
 import LandingPage from "./pages/LandingPage";
 import EventMapPage from "./pages/EventMapPage";
 import NewPassword from "./pages/NewPassword";
-import ChatBox from "./components/ChatBox/ChatBox";
+
+import ChatBox from "./components/chatbox/ChatBox";
+
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "./components/contextAPI/ThemeContext";
 
 function App() {
+  const { theme } = useTheme();
   return (
     <div>
       <Navbar />
@@ -23,6 +29,19 @@ function App() {
         </Route>
       </Routes>
       <ChatBox />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={true}
+        draggable={true}
+        pauseOnHover={true}
+        theme={theme === "dark" ? "dark" : "light"}
+        transition={Slide}
+      />
     </div>
   );
 }
