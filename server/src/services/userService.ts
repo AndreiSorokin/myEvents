@@ -1,10 +1,8 @@
-import {
-  BadRequestError,
-  InternalServerError,
-  NotFoundError,
-} from "../errors/ApiError";
+import { BadRequestError, NotFoundError } from "../errors/ApiError";
 import { IUser } from "../interfaces/IUser";
 import { UserModel } from "../models/user";
+
+import bcrypt from "bcrypt";
 
 // Create a new user
 export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
@@ -20,12 +18,64 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
     const newUser = new UserModel({
       name,
       email,
-      password,
       role,
     });
+    // Only hash the password if it is provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      newUser.password = hashedPassword;
+    }
     return await newUser.save();
-  } catch (error: any) {
-    throw new InternalServerError("Error creating user");
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Update user password by user id
+export const updateUserPassword = async (
+  id: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<IUser> => {
+  try {
+    const user = await UserModel.findById(id);
+    // Check if user exist
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    // Check if the new password is provided and not empty
+    if (
+      !newPassword ||
+      newPassword.trim() === "" ||
+      !currentPassword ||
+      currentPassword.trim() === ""
+    ) {
+      throw new BadRequestError("Please provide current and new passwords");
+    }
+
+    // Check if the user has a password (i.e., not a Google login user)
+    if (!user.password) {
+      throw new BadRequestError(
+        "This user has no password set. Please set a password first."
+      );
+    }
+
+    // Verify if the current password matches the user's stored password
+    const isPasswordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isPasswordMatch) {
+      throw new BadRequestError("Current password is incorrect");
+    }
+
+    // Hash the new password and update it
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    return await user.save();
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -41,7 +91,20 @@ export const findUserById = async (id: string): Promise<IUser> => {
     }
     return user;
   } catch (error) {
-    throw new InternalServerError("Error fetching user by ID");
+    throw error;
+  }
+};
+
+// Find user by email
+export const findUserByEmail = async (email: string): Promise<IUser | null> => {
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+    return user;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -58,7 +121,7 @@ export const fetchAllUsers = async (
     const total = await UserModel.countDocuments();
     return { users, total };
   } catch (error) {
-    throw new InternalServerError("Error fetching users");
+    throw error;
   }
 };
 
@@ -78,7 +141,7 @@ export const updateUser = async (
 
     return updatedUser;
   } catch (error) {
-    throw new InternalServerError("Error updating user");
+    throw error;
   }
 };
 
@@ -91,14 +154,38 @@ export const deleteUser = async (id: string): Promise<void> => {
       throw new NotFoundError("User not found");
     }
   } catch (error) {
-    throw new InternalServerError("Error deleting user");
+    throw error;
   }
+};
+
+// Create an new user from Google
+const createUserFromGoogle = async (userData: {
+  googleId: string;
+  email: string;
+  name: string;
+}): Promise<IUser> => {
+  const newUser = new UserModel({
+    googleId: userData.googleId,
+    email: userData.email,
+    name: userData.name,
+    role: "user",
+  });
+  return await newUser.save();
+};
+
+// Find user by Google ID
+const findUserByGoogleId = async (googleId: string): Promise<IUser | null> => {
+  return await UserModel.findOne({ googleId });
 };
 
 export default {
   createUser,
+  updateUserPassword,
   findUserById,
+  findUserByEmail,
   fetchAllUsers,
   updateUser,
   deleteUser,
+  createUserFromGoogle,
+  findUserByGoogleId,
 };

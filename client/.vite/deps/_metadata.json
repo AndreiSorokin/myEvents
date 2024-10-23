@@ -1,0 +1,73 @@
+{
+  "hash": "7db9aafe",
+  "configHash": "22cbb79b",
+  "lockfileHash": "9c5e23dd",
+  "browserHash": "7d414053",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "4bfcfa44",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "1b14828b",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "652a3fb0",
+      "needsInterop": false
+    },
+    "react-redux": {
+      "src": "../../node_modules/react-redux/dist/react-redux.mjs",
+      "file": "react-redux.js",
+      "fileHash": "cccb0912",
+      "needsInterop": false
+    },
+    "@reduxjs/toolkit": {
+      "src": "../../node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs",
+      "file": "@reduxjs_toolkit.js",
+      "fileHash": "226b844b",
+      "needsInterop": false
+    },
+    "@reduxjs/toolkit/query/react": {
+      "src": "../../node_modules/@reduxjs/toolkit/dist/query/react/rtk-query-react.modern.mjs",
+      "file": "@reduxjs_toolkit_query_react.js",
+      "fileHash": "5e63a28c",
+      "needsInterop": false
+    },
+    "react-dom": {
+      "src": "../../node_modules/react-dom/index.js",
+      "file": "react-dom.js",
+      "fileHash": "f14ad6c9",
+      "needsInterop": true
+    },
+    "canvas-confetti": {
+      "src": "../../node_modules/canvas-confetti/dist/confetti.module.mjs",
+      "file": "canvas-confetti.js",
+      "fileHash": "3692a0af",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-DM7BGDJU": {
+      "file": "chunk-DM7BGDJU.js"
+    },
+    "chunk-HBTQ5QPC": {
+      "file": "chunk-HBTQ5QPC.js"
+    },
+    "chunk-OS4664QW": {
+      "file": "chunk-OS4664QW.js"
+    },
+    "chunk-4SFRHSJ3": {
+      "file": "chunk-4SFRHSJ3.js"
+    },
+    "chunk-EQCVQC35": {
+      "file": "chunk-EQCVQC35.js"
+    }
+  }
+}
