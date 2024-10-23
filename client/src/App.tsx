@@ -6,7 +6,7 @@ import SingleEventPage from "./pages/SingleEventPage";
 import LandingPage from "./pages/LandingPage";
 import EventMapPage from "./pages/EventMapPage";
 import NewPassword from "./pages/NewPassword";
-import ChatBox from "./components/chatbox/ChatBox";
+import ChatBox from "./components/ChatBox/ChatBox";
 
 function App() {
   return (

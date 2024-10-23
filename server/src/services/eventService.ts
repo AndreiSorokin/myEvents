@@ -9,7 +9,6 @@ import { UserModel } from "../models/user";
 import { Types } from "mongoose";
 import { LocationModel } from "../models/location";
 import {
-  summarizeEvent,
   createEventSummary,
 } from "../langchain/summarizeService";
 

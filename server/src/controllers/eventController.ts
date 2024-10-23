@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
-import { callAgent } from "../langchain/agent";
+import { callEventSearchAgent } from "../langchain/eventAgents";
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);
 
@@ -42,7 +42,7 @@ export const getEventsWithAI = async (
   const initialMessage = req.body.message;
   const threadId = Date.now().toString();
   try {
-    const response = await callAgent(client, initialMessage, threadId);
+    const response = await callEventSearchAgent(client, initialMessage, threadId);
     res.json({ threadId, response });
   } catch (error) {
     console.error("Error starting conversation:", error);
@@ -59,7 +59,7 @@ export const continueThread = async (
   const { threadId } = req.params;
   const { message } = req.body;
   try {
-    const response = await callAgent(client, message, threadId);
+    const response = await callEventSearchAgent(client, message, threadId);
     res.json({ response });
   } catch (error) {
     console.error("Error in chat:", error);
