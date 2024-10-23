@@ -2,10 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
-import { callAgent } from "../langchain/agent";
-import { FilterQuery } from "mongoose";
-import { IEvent } from "../interfaces/IEvent";
-import { EventType } from "../enums/EventType";
+import { callEventSearchAgent } from "../langchain/eventAgents";
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);
 
@@ -45,7 +42,11 @@ export const getEventsWithAI = async (
   const initialMessage = req.body.message;
   const threadId = Date.now().toString();
   try {
-    const response = await callAgent(client, initialMessage, threadId);
+    const response = await callEventSearchAgent(
+      client,
+      initialMessage,
+      threadId
+    );
     res.json({ threadId, response });
   } catch (error) {
     console.error("Error starting conversation:", error);
@@ -62,7 +63,7 @@ export const continueThread = async (
   const { threadId } = req.params;
   const { message } = req.body;
   try {
-    const response = await callAgent(client, message, threadId);
+    const response = await callEventSearchAgent(client, message, threadId);
     res.json({ response });
   } catch (error) {
     console.error("Error in chat:", error);
@@ -90,39 +91,11 @@ export const getAllEvents = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const searchQuery = (req.query.searchQuery as string) || "";
-  const eventTypeQuery = (req.query.eventTypeQuery as EventType) || "";
-  const minPrice = req.query.minPrice
-    ? parseFloat(req.query.minPrice as string)
-    : undefined;
-  const maxPrice = req.query.maxPrice
-    ? parseFloat(req.query.maxPrice as string)
-    : undefined;
-  const date = req.query.date ? new Date(req.query.date as string) : undefined;
-
-  console.log(
-    "controllers",
-    page,
-    limit,
-    searchQuery,
-    eventTypeQuery,
-    minPrice,
-    maxPrice,
-    date
-  );
+  const page = parseInt(req.query.page as string);
+  const limit = parseInt(req.query.limit as string);
 
   try {
-    const { events, total } = await eventService.fetchAllEvents(
-      page,
-      limit,
-      searchQuery,
-      eventTypeQuery,
-      minPrice,
-      maxPrice,
-      date
-    );
+    const { events, total } = await eventService.fetchAllEvents(page, limit);
     res.status(200).json({ events, total, page, limit });
   } catch (error) {
     next(error);
