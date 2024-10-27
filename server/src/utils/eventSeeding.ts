@@ -11,17 +11,16 @@ import { createEventSummary } from "../langchain/summarizeService";
 import { EventType } from "../enums/EventType";
 import "dotenv/config";
 import { connectMongoose, MONGO_DB_URL } from "./connectMongoose";
+import { EventModel } from "../models/event"; // Import the EventModel
 
 const client = new MongoClient(MONGO_DB_URL);
 
-// Define LLM configuration
 const llm = new ChatGoogleGenerativeAI({
   model: "gemini-1.5-pro-latest",
   apiKey: process.env.GOOGLE_API_KEY as string,
   temperature: 0.7,
 });
 
-// Location IDs (Collect after implement command `npm run seedLocation`)
 const locationIds = [
   "670be26b9803890eedec5bcb",
   "670be26b9803890eedec5bce",
@@ -32,20 +31,19 @@ const locationIds = [
   "670be26e9803890eedec5bd8",
 ];
 
-// Organizer IDs (Collect after implement command `npm run seedUser`)
 const organizerIds = [
   "670be2709803890eedec5bdb",
   "670be2709803890eedec5bdd",
   "670be2709803890eedec5bdf",
 ];
 
-// Define the schema for event data (Using zod to easier prompting and parsing)
-const EventSchema = z.object({
+// Define the schema for direct LLM output parsing
+const RawEventSchema = z.object({
   name: z.string(),
   description: z.string(),
-  location: z.string(), // locationId
-  organizer: z.string(), // userId (Who has organizer role)
-  date: z.string(), // Date as string for simplicity
+  location: z.string(),
+  organizer: z.string(),
+  date: z.string(), // Accept ISO string from LLM
   price: z.number(),
   event_link: z.string().optional(),
   event_type: z.enum(Object.values(EventType) as [string, ...string[]]),
@@ -53,35 +51,63 @@ const EventSchema = z.object({
   attendees: z.array(z.string()),
 });
 
+// Define the schema for database insertion with proper types
+const EventSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  location: z.instanceof(mongoose.Types.ObjectId),
+  organizer: z.instanceof(mongoose.Types.ObjectId),
+  date: z.date(), // Ensure this is a Date object
+  price: z.number(),
+  event_link: z.string().optional(),
+  event_type: z.enum(Object.values(EventType) as [string, ...string[]]),
+  images: z.array(z.string()),
+  attendees: z.array(z.instanceof(mongoose.Types.ObjectId)),
+});
+
 export type Event = z.infer<typeof EventSchema>;
 
-const parser = StructuredOutputParser.fromZodSchema(z.array(EventSchema));
+const parser = StructuredOutputParser.fromZodSchema(z.array(RawEventSchema));
 
-// Helper function to get a random item from an array
 function getRandomItem<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-// TODO: Generate synthetic event data
 async function generateSyntheticEvent(
   locationId: string,
   organizerId: string,
   retryCount: number = 0
 ): Promise<Event> {
   const prompt = `You are a helpful assistant that generates event data. Generate 1 random event record. The record should include the following fields: name, description, location, organizer, date, price, event_link, event_type, images and attendees. Ensure variety in the data. 
-  For the location and organizer fields, use the provided location and organizer IDs respectively, without generating any extra fields. Use these IDs exactly as provided: location = ${locationId}, organizer = ${organizerId}, images and attendees fields should be in empty array. And event type can be one of the values in the enum list: [conference, workshop, meetup, concert, webinar, networking, hackathon, exhibition, festival, seminar].
+  For the location and organizer fields, use the provided location and organizer IDs respectively, without generating any extra fields. Use these IDs exactly as provided: location = ${locationId}, organizer = ${organizerId}, images and attendees fields should be in empty array. And event type can be one of the values in the enum list: [conference, workshop, meetup, concert, webinar, networking, hackathon, exhibition, festival, seminar]. For the date field, generate an ISO 8601 formatted date string (YYYY-MM-DDTHH:mm:ssZ) for a date after 2025.
   Do not generate any additional fields like locationId or organizerId. ${parser.getFormatInstructions()}`;
-  console.log(`Generating synthetic event... (Attempt ${retryCount + 1})`);
-  const response = await llm.invoke(prompt);
-  const events = await parser.parse(response.content as string);
-  let event = events[0];
 
-  // Add a counter to the name if it's a retry
-  if (retryCount > 0) {
-    event.name = `${event.name} (${retryCount})`;
+  try {
+    const response = await llm.invoke(prompt);
+    const rawEvents = await parser.parse(response.content as string);
+    let rawEvent = rawEvents[0];
+
+    if (retryCount > 0) {
+      rawEvent.name = `${rawEvent.name} (${retryCount})`;
+    }
+
+    // Convert the raw event into the proper format with correct types
+    const event: Event = {
+      ...rawEvent,
+      date: new Date(rawEvent.date), // Convert ISO string to Date object
+      location: new mongoose.Types.ObjectId(rawEvent.location), // Convert string to ObjectId
+      organizer: new mongoose.Types.ObjectId(rawEvent.organizer), // Convert string to ObjectId
+      attendees: rawEvent.attendees.map(
+        (id) => new mongoose.Types.ObjectId(id)
+      ), // Convert attendee IDs to ObjectId
+    };
+
+    // Validate the event with EventSchema
+    return EventSchema.parse(event);
+  } catch (error) {
+    console.error("Error generating event:", error);
+    throw error;
   }
-
-  return event;
 }
 
 async function insertEventWithRetry(
@@ -94,16 +120,27 @@ async function insertEventWithRetry(
     try {
       const summary = await createEventSummary(
         event,
-        event.location,
-        event.organizer
+        event.location.toString(),
+        event.organizer.toString()
       );
 
+      // Create a new EventModel instance
+      const eventDoc = new EventModel({
+        ...event,
+        summary,
+      });
+
+      // Save to MongoDB using Mongoose
+      await eventDoc.save();
+
+      // Create vector search record
       const record = {
         pageContent: summary,
         metadata: {
           ...event,
-          location: new mongoose.Types.ObjectId(event.location),
-          organizer: new mongoose.Types.ObjectId(event.organizer),
+          date: event.date, // Already a Date object
+          location: event.location,
+          organizer: event.organizer,
         },
       };
 
@@ -120,7 +157,9 @@ async function insertEventWithRetry(
         "with locationId:",
         event.location,
         "and organizerId:",
-        event.organizer
+        event.organizer,
+        "and date:",
+        event.date.toISOString()
       );
       return;
     } catch (error: any) {
@@ -129,8 +168,8 @@ async function insertEventWithRetry(
           `Duplicate key error for event: ${event.name}. Retrying...`
         );
         event = await generateSyntheticEvent(
-          event.location,
-          event.organizer,
+          event.location.toString(),
+          event.organizer.toString(),
           i + 1
         );
       } else {

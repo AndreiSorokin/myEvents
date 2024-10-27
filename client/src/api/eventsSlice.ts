@@ -7,12 +7,43 @@ export const eventsApi = createApi({
   reducerPath: "eventsApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    getEvents: builder.query<Events, { limit: number; page: number; searchQuery?: string; eventTypeQuery?: EventType; date?: string; minPrice?: number; maxPrice?: number }>({
-      query: ({ limit, page, searchQuery, eventTypeQuery, date, minPrice, maxPrice }) => ({
-        url: '/events',
-        params: { limit, page, searchQuery, eventTypeQuery, date, minPrice, maxPrice }
-      })
+
+    
+    getEvents: builder.query<
+      Events,
+      {
+        limit?: number;
+        page?: number;
+        searchQuery?: string;
+        eventTypeQuery?: EventType;
+        date?: string;
+        minPrice?: number;
+        maxPrice?: number;
+      }
+    >({
+      query: ({
+        limit,
+        page,
+        searchQuery,
+        eventTypeQuery,
+        date,
+        minPrice,
+        maxPrice,
+      }) => ({
+        url: "/events",
+        params: {
+          limit,
+          page,
+          searchQuery,
+          eventTypeQuery,
+          date,
+          minPrice,
+          maxPrice,
+        },
+      }),
     }),
+
+
     getEventById: builder.query<Event, string>({
       query: (id) => `/events/${id}`,
     }),
