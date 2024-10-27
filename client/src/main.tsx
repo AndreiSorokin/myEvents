@@ -12,7 +12,9 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // Function to dynamically load the Google Maps script
 const loadGoogleMapsScript = () => {
   const script = document.createElement("script");
-  script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAA4fKPO_2aDml2FcIEyIL-HgzhiOWLb0w`;
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${
+    import.meta.env.VITE_GOOGLE_MAP_API_KEY
+  }`;
   script.async = true;
   document.body.appendChild(script);
 };
@@ -25,7 +27,9 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider>
-          <GoogleOAuthProvider clientId="29092288678-m8vfll1i4ajl8c1rphvsj1evk4a8eb2m.apps.googleusercontent.com">
+          <GoogleOAuthProvider
+            clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID!}
+          >
             <App />
           </GoogleOAuthProvider>
         </ThemeProvider>
