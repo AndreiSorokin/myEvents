@@ -22,14 +22,9 @@ const Login = () => {
     useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: { email: string; password: string }) => {
     try {
-      if (!email || !password) {
-        toast.info("Please fill in all fields");
-        return;
-      }
-      await login({ email, password }).unwrap();
+      await login(values).unwrap();
       toast.success("Login successful!");
       navigate("/events");
     } catch (error) {
