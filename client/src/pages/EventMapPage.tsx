@@ -1,10 +1,18 @@
-import { useGetEventsQuery } from '@/api/eventsSlice';
-import EventMap from '../components/map/EventMap';
-import { useTheme } from '@/components/contextAPI/ThemeContext';
-import { getThemeStyles } from '@/utils/themeUtils';
+import { useGetEventsQuery } from "@/api/eventsSlice";
+import EventMap from "../components/map/EventMap";
+import { useTheme } from "@/components/contextAPI/ThemeContext";
+import { getThemeStyles } from "@/utils/themeUtils";
 
-const EventMapPage  = () => {
-  const { data, error, isLoading } = useGetEventsQuery();
+const EventMapPage = () => {
+  const { data, error, isLoading } = useGetEventsQuery({
+    limit: 1000,
+    page: 1,
+    searchQuery: "",
+    eventTypeQuery: undefined,
+    date: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
+  });
   const { theme } = useTheme();
   const { bgColor, fontColor } = getThemeStyles(theme);
 
