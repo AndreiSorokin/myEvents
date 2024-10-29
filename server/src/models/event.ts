@@ -3,6 +3,12 @@ import { IEvent } from "../interfaces/IEvent";
 import { EventType } from "../enums/EventType";
 import { LocationModel } from "./location";
 
+const messageSchema = new Schema({
+  sender: { type: String, required: true },
+  content: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+})
+
 const eventSchema = new Schema<IEvent>({
   name: {
     type: String,
@@ -86,6 +92,7 @@ const eventSchema = new Schema<IEvent>({
   },
   summary: { type: String }, // Store event summary
   summary_embedding: { type: [Number] }, // Store embedding
+  chat: [messageSchema], // Array of chat messages
 });
 
 // JSON serialization for eventSchema

@@ -9,6 +9,7 @@ import locationRoutes from "./routes/locationRoutes";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import authRoutes from "./routes/authRoutes";
+import { EventModel } from "./models/event";
 
 
 dotenv.config({ path: ".env" });
@@ -48,7 +49,13 @@ io.on("connection", (socket) => {
     console.log(`User connected to event: ${eventId}`);
   });
 
-  socket.on("message", ({ eventId, message }) => {
+  socket.on("message", async ({ eventId, message }) => {
+    // Saves a message to a database
+    await EventModel.findByIdAndUpdate(eventId, {
+      $push: { messages: message },
+    })
+
+    // Shows a message on an event page
     io.to(eventId).emit("message", message);
   });
 
