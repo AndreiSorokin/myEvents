@@ -1,6 +1,3 @@
-import { Message } from "./messages";
-import { Organizer } from "./user";
-
 export enum EventType {
   Conference = "conference",
   Workshop = "workshop",
@@ -15,19 +12,24 @@ export enum EventType {
 }
 
 export type Location = {
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
   city: string;
   country: string;
-  post_code: string;
+  post_code?: string;
+  district?: string;
+  ward?: string;
+  street?: string;
+  address_number?: string;
+  id?: string;
 };
 
 export type Event = {
   id: string;
   name: string;
   description: string;
-  location: Location;
-  organizer: Organizer;
+  location: string;
+  organizer: string;
   date: Date;
   price: number;
   event_link: string;
@@ -35,7 +37,6 @@ export type Event = {
   attendees: string[];
   images: string[];
   summary: string;
-  chat: Message[];
 };
 
 export type Events = {

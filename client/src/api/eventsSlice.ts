@@ -7,8 +7,15 @@ export const eventsApi = createApi({
   reducerPath: "eventsApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
+    // Mutation to create a new event
+    createEvent: builder.mutation<Event, Partial<Event>>({
+      query: (eventData) => ({
+        url: "/events",
+        method: "POST",
+        body: eventData,
+      }),
+    }),
 
-    
     getEvents: builder.query<
       Events,
       {
@@ -42,7 +49,6 @@ export const eventsApi = createApi({
         },
       }),
     }),
-
 
     getEventById: builder.query<Event, string>({
       query: (id) => `/events/${id}`,
@@ -79,4 +85,5 @@ export const {
   useGetEventByIdQuery,
   useAiChatMutation,
   useContinueAiChatMutation,
+  useCreateEventMutation,
 } = eventsApi;

@@ -8,9 +8,7 @@ Content-Type: application/json
 
 {
     "country": "Finland",
-    "city": "Vaasa",
-    "district": "Palosaari",
-    "post_code": "65320"
+    "city": "Vaasa"
 }
 
 ### Get All locations
