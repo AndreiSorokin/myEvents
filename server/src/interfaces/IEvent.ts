@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 import { IUser } from "./IUser";
 import { ILocation } from "./ILocation";
 import { EventType } from "../enums/EventType";
+import { IMessage } from "./IMessage";
 
 // Event Interface
 export interface IEvent extends Document {
@@ -17,4 +18,5 @@ export interface IEvent extends Document {
   images: string[]; // Array of image URLs
   summary: String; // Store event summary
   summary_embedding: Number[]; // Store embedding
+  chat: IMessage[]; // Array of chat messages
 }

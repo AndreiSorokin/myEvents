@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import app from "./app";
+import { httpServer } from "./app";
 
 const port = process.env.PORT || 3003;
 const mongoUrl = process.env.MONGO_DB_URL as string;
@@ -13,7 +13,7 @@ mongoose
     dbName: "myEvents",
   })
   .then(() => {
-    app.listen(port, () => {
+    httpServer.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
   })
