@@ -28,7 +28,7 @@ const LandingPage = () => {
       {/* Upcoming Events Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-semibold">Upcoming Events</h2>
+          <h2 className="text-3xl font-semibold">Events for you</h2>
           <Link to="/events">
             <Button variant="outline" className="flex items-center">
               See All <ArrowRight className="ml-2 h-4 w-4" />

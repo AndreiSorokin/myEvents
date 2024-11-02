@@ -43,7 +43,7 @@ const EventMap: React.FC<EventMapProps> = ({ events }) => {
     }
   }, [events]);
 
-  return <div ref={mapRef} style={{ height: '400px', width: '100%' }}></div>;
+  return <div ref={mapRef} style={{ height: '650px', width: '100%' }}></div>;
 };
 
 export default EventMap;

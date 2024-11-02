@@ -21,8 +21,8 @@ POST {{host}}{{apiversion}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "binhnguyen@example.com",
-  "password": "Password1234!"
+  "email": "binh@example.com",
+  "password": "password123"
 }
 
 ### Refresh Token

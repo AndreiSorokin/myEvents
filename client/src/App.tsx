@@ -5,6 +5,7 @@ import Events from "./pages/Events";
 import SingleEventPage from "./pages/SingleEventPage";
 import LandingPage from "./pages/LandingPage";
 import EventMapPage from "./pages/EventMapPage";
+import CreateEventPage from "./pages/CreateEventPage";
 import NewPassword from "./pages/NewPassword";
 
 import ChatBox from "./components/chatbox/ChatBox";
@@ -24,6 +25,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<SingleEventPage />} />
           <Route path="/map" element={<EventMapPage />} />
+          <Route path="/create-event" element={<CreateEventPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/new-password/:token" element={<NewPassword />} />
         </Route>

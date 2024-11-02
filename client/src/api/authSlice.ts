@@ -31,6 +31,7 @@ export const authApi = createApi({
         // Save token and refreshToken to localStorage
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("userId", data.user.id);
       },
     }),
     // Refresh token
