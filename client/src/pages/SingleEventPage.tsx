@@ -4,12 +4,48 @@ import defaulEventImage from '../img/defaulEventImage.png';
 import { Event } from '../misc/events';
 import { useTheme } from '@/components/contextAPI/ThemeContext';
 import { getThemeStyles } from '@/utils/themeUtils';
+import io from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { Message } from '@/misc/messages';
+
 
 const SingleEventPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data, error, isLoading } = useGetEventByIdQuery(id!);
   const { theme } = useTheme();
   const { bgColor, fontColor } = getThemeStyles(theme);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const socket = io(import.meta.env.REACT_APP_SOCKET_URL!);
+
+  useEffect(() => {
+    if(id) {
+      socket.emit("joinEvent", id);
+
+      socket.on("message", (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [id, socket]);
+
+  const handleSendMessage = () => {
+    if(newMessage.trim() === '') return;
+
+    const message: Message = {
+      content: newMessage,
+      sender: "user",
+      timestamp: new Date()
+    }
+
+    socket.emit("message", { eventId: id, message });
+
+    setMessages((prevMessages) => [...prevMessages, message]);
+    setNewMessage('');
+  }
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -53,6 +89,28 @@ const SingleEventPage = () => {
             )}
           </div>
           <div>{eventData?.price !== undefined ? `$${eventData.price}` : 'Price not available'}</div>
+        </div>
+      </div>
+      <div className="w-full max-w-4xl mt-8">
+        <h2 className="text-xl font-bold mb-4">Chat</h2>
+        <div className="border p-4 mb-4 h-64 overflow-y-auto">
+          {messages.map((msg, index) => (
+            <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
+              <span className="font-bold">{msg.sender}:</span> {msg.content}
+            </div>
+          ))}
+        </div>
+        <div className="flex">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            className="flex-grow border p-2"
+            placeholder="Type your message..."
+          />
+          <button onClick={handleSendMessage} className="ml-2 p-2 bg-blue-500 text-white">
+            Send
+          </button>
         </div>
       </div>
     </div>
