@@ -33,7 +33,7 @@ const ChatBox: React.FC = () => {
     return (
       <button
         onClick={toggleChat}
-        className="fixed bottom-4 right-4 z-50 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+        className="fixed bottom-4 right-4 z-50 bg-[#4A43EC] text-white rounded-full p-4 shadow-lg hover:bg-[#3f39c8] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:bg-[#1a0fe9] focus:ring-opacity-50"
         aria-label="Open chat"
       >
         <MessageCircle size={24} />

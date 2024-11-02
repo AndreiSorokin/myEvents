@@ -34,8 +34,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       />
       <button
         type="submit"
-        className={`bg-green-500 text-white rounded-r-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 ${
-          isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-green-600"
+        className={`bg-[#4A43EC] text-white rounded-r-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:bg-[#1a0fe9] focus:ring-offset-2 ${
+          isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#3f39c8]"
         }`}
         disabled={isLoading}
         aria-label="Send message"
