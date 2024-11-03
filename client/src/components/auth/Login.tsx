@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLoginMutation } from "@/api/authSlice";
 import { useNavigate } from "react-router-dom";
 import { CreateAccountModal } from "../user/CreateAccountModal";
-import RequestForgotPasswordModal from "./ForgotPasswordModal";
+import RequestForgotPasswordModal from "./RequestForgotPasswordModal";
 import { useTheme } from "../contextAPI/ThemeContext";
 import { getThemeStyles } from "@/utils/themeUtils";
 import { toast } from "react-toastify";

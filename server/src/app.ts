@@ -20,7 +20,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
   },
 })
 
@@ -51,12 +51,17 @@ io.on("connection", (socket) => {
 
   socket.on("message", async ({ eventId, message }) => {
     // Saves a message to a database
-    await EventModel.findByIdAndUpdate(eventId, {
-      $push: { messages: message },
-    })
-
-    // Shows a message on an event page
-    io.to(eventId).emit("message", message);
+    console.log("message", message)
+    try {
+      await EventModel.findByIdAndUpdate(eventId, {
+        $push: { messages: message },
+      })
+  
+      // Shows a message on an event page
+      io.to(eventId).emit("message", message);
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
 
   socket.on("disconnect", () => {

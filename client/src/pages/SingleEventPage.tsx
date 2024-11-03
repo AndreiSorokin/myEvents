@@ -16,7 +16,7 @@ const SingleEventPage = () => {
   const { bgColor, fontColor } = getThemeStyles(theme);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const socket = io(import.meta.env.REACT_APP_SOCKET_URL!);
+  const socket = io(import.meta.env.VITE_SOCKET_URL!);
 
   useEffect(() => {
     if(id) {
@@ -35,11 +35,14 @@ const SingleEventPage = () => {
   const handleSendMessage = () => {
     if(newMessage.trim() === '') return;
 
+    //TODO: Implement proper user name
+
     const message: Message = {
       content: newMessage,
       sender: "user",
       timestamp: new Date()
     }
+    console.log("Emitting message:", { eventId: id, message });
 
     socket.emit("message", { eventId: id, message });
 
@@ -54,6 +57,7 @@ const SingleEventPage = () => {
   if (!data) return <div>No event data available</div>;
 
   const eventData = data as Event;
+  console.log(eventData)
 
   return (
     <div className={`flex flex-col items-center min-h-screen ${bgColor} ${fontColor} p-8`}>
@@ -96,7 +100,7 @@ const SingleEventPage = () => {
         <div className="border p-4 mb-4 h-64 overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-              <span className="font-bold">{msg.sender}:</span> {msg.content}
+              <span className="font-bold">{msg.timestamp.toISOString()} {msg.sender}:</span> {msg.content}
             </div>
           ))}
         </div>
