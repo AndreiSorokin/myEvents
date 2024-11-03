@@ -1,7 +1,7 @@
 import { Location } from "../misc/events";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3003/api/v1";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const locationsApi = createApi({
   reducerPath: "locationsApi",

@@ -1,3 +1,5 @@
+import { Organizer } from "./user";
+
 export enum EventType {
   Conference = "conference",
   Workshop = "workshop",
@@ -28,8 +30,8 @@ export type Event = {
   id: string;
   name: string;
   description: string;
-  location: string;
-  organizer: string;
+  location: string | Location;
+  organizer: string | Organizer;
   date: Date;
   price: number;
   event_link: string;
