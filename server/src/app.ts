@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import authRoutes from "./routes/authRoutes";
 import { EventModel } from "./models/event";
+import testRoute from "./routes/testRoute";
 
 
 dotenv.config({ path: ".env" });
@@ -36,6 +37,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/locations", locationRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/events", eventRoutes);
+app.use("/api/v1/test", testRoute)
 
 // Global error handling middleware
 app.use(errorHandler);

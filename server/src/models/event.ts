@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IEvent } from "../interfaces/IEvent";
 import { EventType } from "../enums/EventType";
-import { LocationModel } from "./location";
 
 const messageSchema = new Schema({
   sender: { type: String, required: true },
@@ -92,7 +91,7 @@ const eventSchema = new Schema<IEvent>({
   },
   summary: { type: String }, // Store event summary
   summary_embedding: { type: [Number] }, // Store embedding
-  chat: [messageSchema], // Array of chat messages
+  messages: [messageSchema], // Array of chat messages
 });
 
 // JSON serialization for eventSchema
