@@ -10,7 +10,6 @@ import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import authRoutes from "./routes/authRoutes";
 import { EventModel } from "./models/event";
-import testRoute from "./routes/testRoute";
 
 
 dotenv.config({ path: ".env" });
@@ -37,7 +36,6 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/locations", locationRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/events", eventRoutes);
-app.use("/api/v1/test", testRoute)
 
 // Global error handling middleware
 app.use(errorHandler);
@@ -52,14 +50,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", async ({ eventId, message }) => {
-    // Saves a message to a database
-    console.log("message", message)
+    console.log("Received message event:", { eventId, message });
     try {
-      await EventModel.findByIdAndUpdate(eventId, {
+      const result = await EventModel.findByIdAndUpdate(eventId, {
         $push: { messages: message },
-      })
+      });
+      console.log("Database update result:", result);
   
-      // Shows a message on an event page
       io.to(eventId).emit("message", message);
     } catch (error) {
       console.error("Error saving message:", error);
