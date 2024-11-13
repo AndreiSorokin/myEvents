@@ -1,24 +1,31 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useLogoutMutation } from "../api/authSlice";
 import { useTheme } from "./contextAPI/ThemeContext";
-import { SunIcon, MoonIcon } from "@heroicons/react/outline";
-import { getThemeStyles } from "@/utils/themeUtils";
 import { toast } from "react-toastify";
 import { CustomError } from "@/misc/error";
+import { Moon, Sun, Menu, LogOut, User } from "lucide-react";
+import { Button } from "@/components/ui/buttonShadcn";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logo from "../img/logo.png";
 
-const Navbar = () => {
+export default function Navbar() {
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { toggleTheme, theme } = useTheme();
-  const { bgColor, fontColor } = getThemeStyles(theme);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Logout handler
   const handleLogout = async () => {
     try {
       await logout().unwrap();
       toast.info("You have been logged out");
-      // Redirect to login page after logout
       navigate("/login");
     } catch (error) {
       const err = error as CustomError;
@@ -31,76 +38,140 @@ const Navbar = () => {
 
   const isLoggedIn = !!localStorage.getItem("token");
 
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Events", path: "/events" },
+    { name: "Map", path: "/map" },
+    { name: "Create Event", path: "/create-event" },
+  ];
+
   return (
-    <div>
-      <nav className={`${bgColor} ${fontColor}`}>
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <div className="relative flex h-16 items-center justify-between">
-            <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-              <div className="flex flex-shrink-0 items-center">
-                <img className="h-8 w-auto" src={logo} alt="Your Company" />
-              </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
+    <nav className="bg-background">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
+            <Link to="/" className="flex-shrink-0">
+              <img className="h-8 w-auto" src={logo} alt="Logo" />
+            </Link>
+            <div className="hidden md:block ml-10">
+              <div className="flex items-baseline space-x-4">
+                {navItems.map((item) => (
                   <Link
-                    to="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    key={item.name}
+                    to={item.path}
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${
+                      location.pathname === item.path
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
                   >
-                    Home
+                    {item.name}
                   </Link>
-                  <Link
-                    to="/events"
-                    className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white"
-                  >
-                    Events
-                  </Link>
-                  <Link
-                    to="/map"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Map
-                  </Link>
-                  <Link
-                    to="/create-event"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                  >
-                    Create Event
-                  </Link>
-                </div>
+                ))}
               </div>
             </div>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <button
+          </div>
+          <div className="hidden md:block">
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={toggleTheme}
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="mr-2"
               >
                 {theme === "dark" ? (
-                  <SunIcon className="h-5 w-5" />
+                  <Sun className="h-5 w-5" />
                 ) : (
-                  <MoonIcon className="h-5 w-5" />
+                  <Moon className="h-5 w-5" />
                 )}
-              </button>
+              </Button>
               {isLoggedIn ? (
-                <button
-                  onClick={handleLogout}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Logout
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <User className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
-                <Link
-                  to="/login"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Login
-                </Link>
+                <Button variant="ghost" asChild>
+                  <Link to="/login">Login</Link>
+                </Button>
               )}
             </div>
           </div>
+          <div className="md:hidden">
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <nav className="flex flex-col gap-4">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                        location.pathname === item.path
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <hr className="my-2 border-muted" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={toggleTheme}
+                    className="justify-start"
+                  >
+                    {theme === "dark" ? (
+                      <Sun className="mr-2 h-4 w-4" />
+                    ) : (
+                      <Moon className="mr-2 h-4 w-4" />
+                    )}
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                  </Button>
+                  {isLoggedIn ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="justify-start"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="justify-start"
+                    >
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        <User className="mr-2 h-4 w-4" />
+                        Login
+                      </Link>
+                    </Button>
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   );
-};
-
-export default Navbar;
+}

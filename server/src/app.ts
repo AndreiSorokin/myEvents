@@ -11,7 +11,6 @@ import eventRoutes from "./routes/eventRoutes";
 import authRoutes from "./routes/authRoutes";
 import { EventModel } from "./models/event";
 
-
 dotenv.config({ path: ".env" });
 
 const app = express();
@@ -22,7 +21,7 @@ const io = new Server(httpServer, {
     origin: "*",
     methods: ["GET", "POST", "PUT"],
   },
-})
+});
 
 app.get("/", (req, res) => {
   res.send("API is running.");
@@ -44,28 +43,25 @@ app.use(errorHandler);
 io.on("connection", (socket) => {
   console.log("User connected");
 
-  socket.on("joinEvent", (eventId) => {
-    socket.join(eventId);
+  socket.on("joinEvent", async (eventId) => {
+    await socket.join(eventId);
     console.log(`User connected to event: ${eventId}`);
   });
 
   socket.on("message", async ({ eventId, message }) => {
-    console.log("Received message event:", { eventId, message });
     try {
       const result = await EventModel.findByIdAndUpdate(eventId, {
         $push: { messages: message },
       });
-      console.log("Database update result:", result);
-  
       io.to(eventId).emit("message", message);
     } catch (error) {
       console.error("Error saving message:", error);
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("User disconnected");
-  })
-})
+  });
+});
 
 export { app, httpServer };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface EventMapProps {
   events: Array<{
@@ -25,9 +25,12 @@ const EventMap: React.FC<EventMapProps> = ({ events }) => {
         zoom: 5,
       });
 
-      events.forEach(event => {
+      events.forEach((event) => {
         const marker = new google.maps.Marker({
-          position: { lat: event.location.latitude, lng: event.location.longitude },
+          position: {
+            lat: event.location.latitude,
+            lng: event.location.longitude,
+          },
           map,
           title: event.name,
         });
@@ -36,14 +39,14 @@ const EventMap: React.FC<EventMapProps> = ({ events }) => {
           content: `<b>${event.name}</b><br>${event.summary}<br>${event.location.city}, ${event.location.country} ${event.location.post_code}`,
         });
 
-        marker.addListener('click', () => {
+        marker.addListener("click", () => {
           infoWindow.open(map, marker);
         });
       });
     }
   }, [events]);
 
-  return <div ref={mapRef} style={{ height: '650px', width: '100%' }}></div>;
+  return <div ref={mapRef} style={{ height: "650px", width: "100%" }}></div>;
 };
 
 export default EventMap;
