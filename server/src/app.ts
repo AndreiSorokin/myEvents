@@ -49,14 +49,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", async ({ eventId, message }) => {
-    // Saves a message to a database
-    console.log("message", message);
     try {
-      await EventModel.findByIdAndUpdate(eventId, {
+      const result = await EventModel.findByIdAndUpdate(eventId, {
         $push: { messages: message },
       });
-
-      // Shows a message on an event page
       io.to(eventId).emit("message", message);
     } catch (error) {
       console.error("Error saving message:", error);

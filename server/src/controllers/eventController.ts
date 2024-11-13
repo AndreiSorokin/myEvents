@@ -3,8 +3,6 @@ import eventService from "../services/eventService";
 import { uploadImageToCloudinary } from "../services/imageUpload";
 import { MongoClient } from "mongodb";
 import { callEventSearchAgent } from "../langchain/eventAgents";
-import { FilterQuery } from "mongoose";
-import { IEvent } from "../interfaces/IEvent";
 import { EventType } from "../enums/EventType";
 
 const client = new MongoClient(process.env.MONGO_DB_URL as string);

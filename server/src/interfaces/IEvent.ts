@@ -18,5 +18,5 @@ export interface IEvent extends Document {
   images: string[]; // Array of image URLs
   summary: String; // Store event summary
   summary_embedding: Number[]; // Store embedding
-  chat: IMessage[]; // Array of chat messages
+  messages: IMessage[]; // Array of chat messages
 }
