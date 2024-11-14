@@ -4,12 +4,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useGetEventsQuery } from "@/api/eventsSlice";
 import defaultEventImage from "../img/defaulEventImage.png";
-import { useTheme } from "@/components/contextAPI/ThemeContext";
 import { EventType } from "@/misc/events";
 import { SearchIcon, CalendarIcon, XIcon } from "@heroicons/react/outline";
 
 const Events = () => {
-  const { theme, toggleTheme } = useTheme();
   const [searchItem, setSearchItem] = useState("");
   const [selectedEventType, setSelectedEventType] = useState<EventType | "">(
     ""

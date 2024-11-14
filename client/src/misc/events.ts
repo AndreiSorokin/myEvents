@@ -30,8 +30,8 @@ export type Event = {
   id: string;
   name: string;
   description: string;
-  location: string | Location;
-  organizer: string | Organizer;
+  location: Location;
+  organizer: Organizer;
   date: Date;
   price: number;
   event_link: string;
