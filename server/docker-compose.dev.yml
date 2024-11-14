@@ -1,16 +1,5 @@
 services:
-  mongo:
-    image: mongo
-    ports:
-      - 3456:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: my_database
-    volumes: 
-      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - ./mongo_data:/data/db
-  myEvents-backend:
+  myevents-backend:
     build:
       context: .
       dockerfile: dev.Dockerfile
@@ -21,5 +10,3 @@ services:
       - /usr/src/app/node_modules
     environment:
       - MONGO_DB_URL=${MONGO_DB_URL}
-    depends_on:
-      - mongo
