@@ -81,17 +81,22 @@ const SingleEventPage = () => {
           </div>
           <div className="mb-4">
             {eventData?.location ? (
-              <>
-                <div>Country: {eventData.location.country}</div>
-                <div>City: {eventData.location.city}</div>
-                <div>Post Code: {eventData.location.post_code}</div>
-                <div>Latitude: {eventData.location.latitude}</div>
-                <div>Longitude: {eventData.location.longitude}</div>
-              </>
+              typeof eventData.location === 'object' && 'country' in eventData.location ? (
+                <>
+                  <div>Country: {eventData.location.country}</div>
+                  <div>City: {eventData.location.city}</div>
+                  <div>Post Code: {eventData.location.post_code}</div>
+                  <div>Latitude: {eventData.location.latitude}</div>
+                  <div>Longitude: {eventData.location.longitude}</div>
+                </>
+              ) : (
+                <div>Location is not available as an object.</div>
+              )
             ) : (
               'No location available'
             )}
           </div>
+
           <div>{eventData?.price !== undefined ? `$${eventData.price}` : 'Price not available'}</div>
         </div>
       </div>

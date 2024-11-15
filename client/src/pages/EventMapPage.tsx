@@ -40,7 +40,17 @@ const EventMapPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <Card className="lg:col-span-2">
             <CardContent className="p-0">
-              {data && <EventMap events={data.events} />}
+            {data && (
+              <EventMap
+                events={data.events.map(event => ({
+                  ...event,
+                  location: typeof event.location === "string"
+                    ? { city: "", country: "", latitude: undefined, longitude: undefined, post_code: "" } // Default empty Location
+                    : event.location,
+                }))}
+              />
+            )}
+
             </CardContent>
           </Card>
           <Card>

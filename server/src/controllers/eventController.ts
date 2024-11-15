@@ -102,7 +102,6 @@ export const getAllEvents = async (
   const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined;
   const date = req.query.date ? new Date(req.query.date as string) : undefined;
 
-  console.log('controllers', page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date)
 
   try {
     const { events, total } = await eventService.fetchAllEvents(page, limit, searchQuery, eventTypeQuery, minPrice, maxPrice, date);
