@@ -1,0 +1,11 @@
+services:
+  app:
+    image: client-myevents
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes: 
+      - ./:/usr/src/app
+    ports:
+      - 8080:8080
+    container_name: client-myevents
