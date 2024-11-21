@@ -1,31 +1,75 @@
 @host = http://localhost:3003
-@userId = 66e4736af452f73c4fdb0196
+@apiversion = /api/v1
+@userId = 67013529a2556b0192e1acfb
+@jwtToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDEzNTI5YTI1NTZiMDE5MmUxYWNmYiIsInJvbGUiOiJvcmdhbml6ZXIiLCJpYXQiOjE3MjgxMzI4MjEsImV4cCI6MTcyODEzNjQyMX0.oBrGzQUuKVpmckwWmDTWtgbT8307FzFosVC69xdE5Sg
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDEzNTI5YTI1NTZiMDE5MmUxYWNmYiIsImlhdCI6MTcyODEzMjY1NiwiZXhwIjoxNzI4NzM3NDU2fQ.7JH_b-PGTzZL79XBBzRvzrS7d3l8_7fLHi8gAPU_4IQ
+@userEmail = john@example.com
 
 ### Create a new user
-POST {{host}}/api/users 
+POST {{host}}{{apiversion}}/users 
 Content-Type: application/json
 
 {
-  "name": "Alice Johnson",
-  "email": "alice.johnson@example.com",
-  "password": "Password123!",
+  "name": "binh nguyen",
+  "email": "binhnguyen@example.com",
+  "password": "123456",
   "role": "organizer"
 }
 
+### Login 
+POST {{host}}{{apiversion}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "binh@example.com",
+  "password": "password123"
+}
+
+### Refresh Token
+POST {{host}}{{apiversion}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "token": "{{refreshToken}}"
+}
+
+### Reset Password - (Should be for admin only)
+POST {{host}}{{apiversion}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "binhnguyen@example.com",
+  "newPassword": "123456789"
+}
+
+### Update user password by ID
+PUT {{host}}{{apiversion}}/users/{{userId}}/update-password
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "currentPassword": "123456789",
+    "newPassword": "Password1234!"
+}
+
 ### Get all users (with pagination)
-GET {{host}}/api/users?page=1&limit=10
+GET {{host}}{{apiversion}}/users?page=1&limit=10
+Authorization: Bearer {{jwtToken}}
 
 ### Get a user by ID
-GET {{host}}/api/users/{{userId}}
+GET {{host}}{{apiversion}}/users/{{userId}}
+Authorization: Bearer {{jwtToken}}
 
 ### Update a user by ID
-PUT {{host}}/api/users/{{userId}}
+PUT {{host}}{{apiversion}}/users/{{userId}}
 Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
 
 {
   "name": "Michael Smith Updated",
   "email": "michael.smith@example.com"
 }
 
-### Delete a user by ID
-DELETE {{host}}/api/users/{{userId}}
+### Delete a user by ID - (Should be for admin only)
+DELETE {{host}}{{apiversion}}/users/{{userId}}
+Authorization: Bearer {{jwtToken}}

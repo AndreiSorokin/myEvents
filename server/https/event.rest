@@ -1,39 +1,55 @@
 @host = http://localhost:3003
-@eventId = 66e47b5bc7fd3303b57c8f0b
+@eventId = 6714cf65106266b65dc1e350
+@apiversion = /api/v1
 
 ### Create a new event
-POST {{host}}/api/events
+POST {{host}}{{apiversion}}/events
 Content-Type: application/json
 
 {
-  "name": "Tech Conference 2024",
-  "description": "A leading technology conference.",
-  "location": {
-    "latitude": 60.1699,
-    "longitude": 24.9384,
-    "address": {
-      "country": "Finland",
-      "city": "Helsinki",
-      "district": "Kallio",
-      "post_code": "00530"
-  }
-  },
-  "organizer": "66e4739bf452f73c4fdb019d", 
-  "date": "2024-09-20T18:30:00.000Z",
-  "price": 250,
-  "event_link": "https://techconf2024.com",
+  "name": "Junction 2026",
+  "description": "The best hackathon organized first time in Vietnam",
+  "location": "6715283220d55c2e89aaf8cd",
+  "organizer": "670be2709803890eedec5bdd",
+  "date": "2026-12-01T14:00:00.000Z",
+  "price": 10,
+  "event_link": "https://example.com/ai-conference",
   "event_type": "conference",
   "attendees": []
 }
 
+### Chat to find Events with AI (From MongoDB)
+POST {{host}}{{apiversion}}/events/ai
+Content-Type: application/json
+
+{
+  "message": "I plan to go somewhere with my friends but I do not have that much money, can you recommend me some affordable events?"
+}
+
+### Chat to find Events with AI (From Internet)
+POST {{host}}{{apiversion}}/events/ai
+Content-Type: application/json
+
+{
+  "message": "Find me the upcoming concerts in Helsinki"
+}
+
+### Continue the chat
+POST {{host}}{{apiversion}}/events/ai/1729343744886
+Content-Type: application/json
+
+{
+  "message": "Any free concert so far?"
+}
+
 ### Get event by ID
-GET {{host}}/api/events/{{eventId}}
+GET {{host}}{{apiversion}}/events/{{eventId}}
 
 ### Fetch all events with pagination
-GET {{host}}/api/events?page=1&limit=10
+GET {{host}}{{apiversion}}/events?page=1&limit=11
 
 ### Update event by ID (partial update - only date)
-PUT {{host}}/api/events/{{eventId}}
+PUT {{host}}{{apiversion}}/events/{{eventId}}
 Content-Type: application/json
 
 {
@@ -41,7 +57,7 @@ Content-Type: application/json
 }
 
 ### Update event by ID (partial update - only price)
-PUT {{host}}/api/events/{{eventId}}
+PUT {{host}}{{apiversion}}/events/{{eventId}}
 Content-Type: application/json
 
 {
@@ -49,4 +65,4 @@ Content-Type: application/json
 }
 
 ### Delete event by ID
-DELETE {{host}}/api/events/{{eventId}}
+DELETE {{host}}{{apiversion}}/events/{{eventId}}

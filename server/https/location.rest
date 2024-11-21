@@ -1,17 +1,39 @@
+@host = http://localhost:3003
+@apiversion = /api/v1
+@address_id = 67014f0c42f85f6b4dc669d1
+
 ### Create a new location
-POST http://localhost:3003/api/locations
+POST {{host}}{{apiversion}}/locations
 Content-Type: application/json
 
 {
-  "latitude": 60.1699,
-  "longitude": 24.9384,
-  "address": {
     "country": "Finland",
-    "city": "Helsinki",
-    "district": "Kallio",
-    "post_code": "00530"
-  }
+    "city": "Vaasa"
 }
 
+### Get All locations
+GET {{host}}{{apiversion}}/locations
+
+### Get location by address
+GET {{host}}{{apiversion}}/locations/by-address?address=Vaasa
+### Get location by coordinates
+GET {{host}}{{apiversion}}/locations/by-coordinates?long=108
+
 ### Get location by ID
-GET http://localhost:3003/api/locations/66e31ff0444a4d55c59828a7
+GET {{host}}{{apiversion}}/locations/67054354c1ec65abfaa30077
+
+### Update location
+PUT {{host}}{{apiversion}}/locations/67054354c1ec65abfaa30077
+Content-Type: application/json
+
+{
+  "country": "Vietnam",
+  "city": "Da Nang",
+  "district": "Hải Châu District",
+  "ward": "Phường Hải Châu I",
+  "street": "Nguyễn Văn Linh",
+  "address_number": "126"
+}
+
+### Delete location
+DELETE {{host}}{{apiversion}}/locations/67054354c1ec65abfaa30077
