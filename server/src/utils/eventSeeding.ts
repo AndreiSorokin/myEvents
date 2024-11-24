@@ -22,19 +22,18 @@ const llm = new ChatGoogleGenerativeAI({
 });
 
 const locationIds = [
-  "670be26b9803890eedec5bcb",
-  "670be26b9803890eedec5bce",
-  "670be26c9803890eedec5bd0",
-  "670be26d9803890eedec5bd2",
-  "670be26d9803890eedec5bd4",
-  "670be26e9803890eedec5bd6",
-  "670be26e9803890eedec5bd8",
+  "672e4b305cd956f4535df2b1",
+  "672e4b325cd956f4535df2b5",
+  "672e4b345cd956f4535df2b7",
+  "672e4b355cd956f4535df2b9",
+  "672e4b365cd956f4535df2bb",
+  "672e4b375cd956f4535df2bd",
 ];
 
 const organizerIds = [
-  "670be2709803890eedec5bdb",
-  "670be2709803890eedec5bdd",
-  "670be2709803890eedec5bdf",
+  "672e4b385cd956f4535df2c0",
+  "672e4b385cd956f4535df2c2",
+  "672e4b395cd956f4535df2c4",
 ];
 
 // Define the schema for direct LLM output parsing

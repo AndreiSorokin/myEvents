@@ -30,11 +30,6 @@ const locationData = [
     post_code: "28014",
   },
   {
-    country: "Netherlands",
-    city: "Amsterdam",
-    post_code: "1012",
-  },
-  {
     country: "Sweden",
     city: "Stockholm",
     post_code: "114 32",
