@@ -100,7 +100,7 @@ const SingleEventPage = () => {
         <div className="border p-4 mb-4 h-64 overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-              <span className="font-bold">{msg.timestamp.toISOString()} {msg.sender}:</span> {msg.content}
+              <span className="font-bold">{msg.timestamp.toString()} {msg.sender}:</span> {msg.content}
             </div>
           ))}
         </div>
