@@ -1,3 +1,4 @@
+import { Message } from "./messages";
 import { Organizer } from "./user";
 
 export enum EventType {
@@ -39,6 +40,7 @@ export type Event = {
   attendees: string[];
   images: string[];
   summary: string;
+  messages: Message[];
 };
 
 export type Events = {
