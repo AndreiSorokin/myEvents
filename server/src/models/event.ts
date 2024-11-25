@@ -91,7 +91,7 @@ const eventSchema = new Schema<IEvent>({
   },
   summary: { type: String }, // Store event summary
   summary_embedding: { type: [Number] }, // Store embedding
-  messages: [messageSchema], // Array of chat messages
+  messages: { type: [messageSchema], default: [] }, // Array of chat messages
 });
 
 // JSON serialization for eventSchema

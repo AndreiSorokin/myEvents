@@ -43,16 +43,29 @@ app.use(errorHandler);
 io.on("connection", (socket) => {
   console.log("User connected");
 
-  socket.on("joinEvent", async (eventId) => {
+  socket.on("joinEvent", async ({ eventId }) => {
+    
     await socket.join(eventId);
     console.log(`User connected to event: ${eventId}`);
   });
 
   socket.on("message", async ({ eventId, message }) => {
+    console.log("Received message:", message);
+    console.log("For event:", eventId);
     try {
-      const result = await EventModel.findByIdAndUpdate(eventId, {
-        $push: { messages: message },
-      });
+      const event = await EventModel.findById(eventId);
+
+      if(!event) {
+        console.error(`Event with ID ${eventId} not found`);
+        return;
+      }
+
+      event.messages.push(message);
+      console.log("Updated messages array:", event.messages);
+
+      await event.save();
+      console.log("Message successfully saved to database.");
+      
       io.to(eventId).emit("message", message);
     } catch (error) {
       console.error("Error saving message:", error);

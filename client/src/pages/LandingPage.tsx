@@ -27,34 +27,36 @@ const LandingPage = () => {
 
       {/* Upcoming Events Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-semibold">Events for you</h2>
-          <Link to="/events">
-            <Button variant="outline" className="flex items-center">
-              See All <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((event) => (
-            <Card key={event}>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CalendarDays className="mr-2" />
-                  Event {event}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">
-                  Join us for an exciting event filled with fun and
-                  entertainment!
-                </p>
-                <Button variant="outline">Learn More</Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+  <div className="flex justify-between items-center mb-8">
+    <h2 className="text-3xl font-semibold">Events for you</h2>
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[1, 2, 3].map((event) => (
+      <Card key={event}>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <CalendarDays className="mr-2" />
+            Event {event}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-4">
+            Join us for an exciting event filled with fun and entertainment!
+          </p>
+          <Button variant="outline">Learn More</Button>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+  <div className="flex justify-center mt-8">
+    <Link to="/events">
+      <Button variant="outline" className="flex items-center">
+        See All <ArrowRight className="ml-2 h-4 w-4" />
+      </Button>
+    </Link>
+  </div>
+</section>
+
 
       {/* Invite Friends Section */}
       <section className="container mx-auto px-4 py-16 bg-primary text-primary-foreground">
