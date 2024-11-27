@@ -17,6 +17,7 @@ This repository contains the server for the event application contributed by And
 - [Folder structure](#folder-structure)
 - [API Endpoints](#api-endpoints)
 - [Containerization](#containerization)
+- [AI-Flow](#ai-flow)
 
 ## Getting Started
 
@@ -212,4 +213,6 @@ docker login
 docker push your-username/my-events-backend-app:1.0.0
 ```
 
-#### 6.4. [Publish URL](https://hub.docker.com/repository/docker/tripplen63/my-events-backend-app/general)
+## 7. AI-Flow
+
+![ai-flow](image/README/ai-flow.png)
