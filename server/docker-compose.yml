@@ -1,0 +1,12 @@
+services:
+  myevents-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3003:3003
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - MONGO_DB_URL=${MONGO_DB_URL}

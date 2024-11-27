@@ -6,11 +6,11 @@ interface EventMapProps {
     name: string;
     summary: string;
     location: {
-      latitude: number;
-      longitude: number;
+      latitude?: number;
+      longitude?: number;
       city: string;
       country: string;
-      post_code: string;
+      post_code?: string;
     };
   }>;
 }
@@ -26,23 +26,23 @@ const EventMap: React.FC<EventMapProps> = ({ events }) => {
       });
 
       events.forEach((event) => {
-        const marker = new google.maps.Marker({
-          position: {
-            lat: event.location.latitude,
-            lng: event.location.longitude,
-          },
-          map,
-          title: event.name,
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<b>${event.name}</b><br>${event.summary}<br>${event.location.city}, ${event.location.country} ${event.location.post_code}`,
-        });
-
-        marker.addListener("click", () => {
-          infoWindow.open(map, marker);
-        });
+        if (event.location.latitude !== undefined && event.location.longitude !== undefined) {
+          const marker = new google.maps.Marker({
+            position: { lat: event.location.latitude, lng: event.location.longitude },
+            map,
+            title: event.name,
+          });
+      
+          const infoWindow = new google.maps.InfoWindow({
+            content: `<b>${event.name}</b><br>${event.summary}<br>${event.location.city}, ${event.location.country} ${event.location.post_code}`,
+          });
+      
+          marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+          });
+        }
       });
+      
     }
   }, [events]);
 

@@ -174,20 +174,9 @@ export const fetchAllEvents = async (
     }
   }
 
-  console.log(
-    "services",
-    page,
-    limit,
-    searchQuery,
-    eventTypeQuery,
-    minPrice,
-    maxPrice,
-    date
-  );
-
   try {
     const skip = ((page ?? 1) - 1) * (limit ?? 10);
-    const events = await EventModel.find()
+    const events = await EventModel.find(query)
       .skip(skip)
       .limit(limit ?? 10)
       .populate("organizer attendees")

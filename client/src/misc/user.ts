@@ -25,7 +25,7 @@ export type PasswordUpdateRequest = {
 
 export type Organizer = {
   id: string;
-  name: string;
-  email: string;
-  role: string;
+  name?: string;
+  email?: string;
+  role?: string;
 };

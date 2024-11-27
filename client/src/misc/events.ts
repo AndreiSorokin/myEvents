@@ -1,3 +1,4 @@
+import { Message } from "./messages";
 import { Organizer } from "./user";
 
 export enum EventType {
@@ -30,8 +31,8 @@ export type Event = {
   id: string;
   name: string;
   description: string;
-  location: string | Location;
-  organizer: string | Organizer;
+  location: Location | string;
+  organizer: Organizer | string;
   date: Date;
   price: number;
   event_link: string;
@@ -39,6 +40,7 @@ export type Event = {
   attendees: string[];
   images: string[];
   summary: string;
+  messages: Message[];
 };
 
 export type Events = {

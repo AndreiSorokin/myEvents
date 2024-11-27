@@ -1,12 +1,15 @@
 import { useGetEventByIdQuery } from '@/api/eventsSlice';
 import { useParams } from 'react-router-dom';
-import defaulEventImage from '../img/defaulEventImage.png';
-import { Event } from '../misc/events';
-import { useTheme } from '@/components/contextAPI/ThemeContext';
-import { getThemeStyles } from '@/utils/themeUtils';
 import io from 'socket.io-client';
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import defaulEventImage from '../img/defaulEventImage.png';
+import { Event } from '../misc/events';
 import { Message } from '@/misc/messages';
+import { useTheme } from '@/components/contextAPI/ThemeContext';
+import { getThemeStyles } from '@/utils/themeUtils';
+import { useGetUserByIdQuery } from '@/api/userSlice';
 
 
 const SingleEventPage = () => {
@@ -16,14 +19,22 @@ const SingleEventPage = () => {
   const { bgColor, fontColor } = getThemeStyles(theme);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const userId = localStorage.getItem("userId");
+  const { data: userData } = useGetUserByIdQuery(userId!);
+  console.log('userData', userData)
   const socket = io(import.meta.env.VITE_SOCKET_URL!);
 
   useEffect(() => {
     if(id) {
-      socket.emit("joinEvent", id);
+      socket.emit("joinEvent", { eventId: id });
 
       socket.on("message", (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => {
+          if(prevMessages.some((msg) => msg.id === message.id)){
+            return prevMessages;
+          }
+          return [...prevMessages, message];
+        });
       });
 
       return () => {
@@ -32,14 +43,21 @@ const SingleEventPage = () => {
     }
   }, [id, socket]);
 
+  useEffect(() => {
+    if (data && data.messages) {
+      setMessages(data.messages); // Load existing messages from the backend
+    }
+  }, [data]);
+
   const handleSendMessage = () => {
     if(newMessage.trim() === '') return;
 
     //TODO: Implement proper user name
 
     const message: Message = {
+      id: uuidv4(),
       content: newMessage,
-      sender: "user",
+      sender: userData!.name,
       timestamp: new Date()
     }
     console.log("Emitting message:", { eventId: id, message });
@@ -49,6 +67,11 @@ const SingleEventPage = () => {
     setMessages((prevMessages) => [...prevMessages, message]);
     setNewMessage('');
   }
+
+  const formatTimestamp = (timestamp: Date | string) => {
+    const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+    return date.toLocaleString();
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -81,17 +104,22 @@ const SingleEventPage = () => {
           </div>
           <div className="mb-4">
             {eventData?.location ? (
-              <>
-                <div>Country: {eventData.location.country}</div>
-                <div>City: {eventData.location.city}</div>
-                <div>Post Code: {eventData.location.post_code}</div>
-                <div>Latitude: {eventData.location.latitude}</div>
-                <div>Longitude: {eventData.location.longitude}</div>
-              </>
+              typeof eventData.location === 'object' && 'country' in eventData.location ? (
+                <>
+                  <div>Country: {eventData.location.country}</div>
+                  <div>City: {eventData.location.city}</div>
+                  <div>Post Code: {eventData.location.post_code}</div>
+                  <div>Latitude: {eventData.location.latitude}</div>
+                  <div>Longitude: {eventData.location.longitude}</div>
+                </>
+              ) : (
+                <div>Location is not available as an object.</div>
+              )
             ) : (
               'No location available'
             )}
           </div>
+
           <div>{eventData?.price !== undefined ? `$${eventData.price}` : 'Price not available'}</div>
         </div>
       </div>
@@ -100,7 +128,7 @@ const SingleEventPage = () => {
         <div className="border p-4 mb-4 h-64 overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-              <span className="font-bold">{msg.timestamp.toString()} {msg.sender}:</span> {msg.content}
+              <span className="font-bold">{formatTimestamp(msg.timestamp)} {msg.sender}:</span> {msg.content}
             </div>
           ))}
         </div>
